@@ -5,7 +5,7 @@ Data structures for cases and recordings - https://docs.google.com/document/d/1-
 API design - https://docs.google.com/document/d/1TdlgaqFHUwyY9qQXU1NMK0WqYotPEoZw-Gts38CS-Nc/edit?usp=sharing
 
 
-Frameoworks to explore -
+Frameworks to explore -
 
 Front end - Svelte, React (Typescript)
 Server - Flask / Express 
