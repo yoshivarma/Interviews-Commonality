@@ -1,6 +1,11 @@
 <script lang="ts">
-import '@unocss/reset/tailwind.css'
-import 'uno.css'
+	import '@unocss/reset/tailwind.css';
+	import 'uno.css';
+	import Recordings from '$lib/components/recordings.svelte';
+	import Keywords from '$lib/components/keywords.svelte';
+	import Cases from '$lib/components/cases.svelte';
 </script>
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+
+<Keywords />
+<Cases />
+<Recordings />

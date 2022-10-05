@@ -13,6 +13,7 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
+		"@iconify/json": "^2.1.118",
 		"@playwright/test": "^1.25.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
