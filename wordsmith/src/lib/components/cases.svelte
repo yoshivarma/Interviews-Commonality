@@ -17,24 +17,26 @@
 			</svg>
 		</button>
 	</div>
-	<div class="flex items-center mb-2 rounded justify-between p-3">
-		<span class="rounded-lg p-2 bg-white">
-			<div class="px-2">1</div>
-		</span>
-		<div class="flex w-full ml-2 items-center justify-between text-white">
-			<p>Case 1</p>
-			<div class="">
-                <svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-			</svg>
-            </div>
+	{#each [1, 2, 3] as i}
+		<div class="flex items-center mb-2 rounded justify-between p-3">
+			<span class="rounded-lg p-2 bg-white">
+				<div class="px-2">{i}</div>
+			</span>
+			<div class="flex w-full ml-2 items-center justify-between text-white">
+				<p>Case {i}</p>
+				<div class="">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="w-6 h-6"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+					</svg>
+				</div>
+			</div>
 		</div>
-	</div>
+	{/each}
 </div>
