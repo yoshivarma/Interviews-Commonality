@@ -7,10 +7,10 @@ API design - https://docs.google.com/document/d/1TdlgaqFHUwyY9qQXU1NMK0WqYotPEoZ
 
 Frameworks to explore -
 
-Front end - Svelte, React (Typescript)
-Server - Flask / Express 
-DB - MongoDB / PostgreSQL
-Model hosting - Exploration (by Yoshita)
+Front end - Svelte, React (Typescript)<br/>
+Server - Flask / Express <br/>
+DB - MongoDB / PostgreSQL<br/>
+Model hosting - Exploration (by Yoshita)<br/>
 
 
 Dataset creation by scraping google reviews and relevant words for 20 places. To use either of -
