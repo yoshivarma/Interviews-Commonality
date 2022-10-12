@@ -8,7 +8,9 @@
 
 <div class="p-4 bg-gray-700">
 	<div class="mt-4">
-		<Keywords />
+		{#each ['1','2','3','4'] as word}
+			<Keywords {word}/>
+		{/each}
 	</div>
 	<div class="mt-4">
 		<Cases />
