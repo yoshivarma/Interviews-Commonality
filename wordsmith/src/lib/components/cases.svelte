@@ -1,8 +1,13 @@
+<script lang="ts">
+	$: cases = [1, 2, 3];
+</script>
+
 <div class="shadow-lg rounded-xl w-full md:w-80 p-4 bg-gray-800 relative overflow-hidden">
 	<div class="w-full flex items-center justify-between mb-6">
 		<p class="text-white text-xl font-medium">Cases</p>
 		<button
 			class="flex items-center hover:text-black text-gray-50 hover:text-white border-0 focus:outline-none"
+			on:click={() => {cases.push(cases.length+1); cases = cases} }
 		>
 			<svg
 				width="20"
@@ -17,14 +22,14 @@
 			</svg>
 		</button>
 	</div>
-	{#each [1, 2, 3] as i}
+	{#each cases as i}
 		<div class="flex items-center mb-2 rounded justify-between p-3">
 			<span class="rounded-lg p-2 bg-white">
 				<div class="px-2">{i}</div>
 			</span>
 			<div class="flex w-full ml-2 items-center justify-between text-white">
 				<p>Case {i}</p>
-				<div class="">
+				<a href='/recordings/{i}'>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -35,7 +40,7 @@
 					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 					</svg>
-				</div>
+				</a>
 			</div>
 		</div>
 	{/each}

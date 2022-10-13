@@ -14,7 +14,6 @@ const config: UserConfig = {
 		alias: {
 			$components: resolve('src/lib/components'),
 			$services: resolve('./src/lib/services'),
-			$stores: resolve('./src/lib/stores'),
 			$models: resolve('./src/lib/models')
 		}
 	}
