@@ -10,3 +10,10 @@ DB - MongoDB <br/>
 
 Datasets
 1. Google reviews and relevant words for 6 places (used - https://webscraper.io/)
+
+Useful links (shared by Ben) -
+1. https://www.docker.com/products/docker-desktop/
+2. https://www.docker.com/101-tutorial/
+3. https://argoproj.github.io/argo-workflows/quick-start/
+4. https://skaffold.dev/
+5. https://helm.sh/docs/chart_template_guide/getting_started/
