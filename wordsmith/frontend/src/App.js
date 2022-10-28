@@ -1,11 +1,21 @@
-import "./App.css";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import ReactAudioPlayer from "react-audio-player";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { useState } from "react";
+import ReactAudioPlayer from "react-audio-player";
+import "./App.css";
+import Button from "@mui/material/Button";
+import * as React from "react";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import AddIcon from "@mui/icons-material/Add";
+import { Container } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 // function App() {
 // 	const [recording, setRecording] = useState([]);
@@ -20,60 +30,6 @@ import "@fontsource/roboto/700.css";
 // 	});
 // }
 
-// var a;
-// const App = () => {
-// 	const [buttonName, setButtonName] = useState("Play");
-
-// 	const [audio, setAudio] = useState();
-// 	// const [audioName, setAudioName] = useState([]);
-// 	const [audioName, setAudioName] = useState();
-// 	const [isVisible, setIsVisible] = useState(false);
-
-// 	useEffect(() => {
-// 		if (a) {
-// 			a.pause();
-// 			a = null;
-// 			setButtonName("Play");
-// 		}
-// 		if (audio) {
-// 			a = new Audio(audio);
-// 			a.onended = () => {
-// 				setButtonName("Play");
-// 			};
-// 			setIsVisible(true);
-// 		}
-// 	}, [audio]);
-
-// 	const handleClick = () => {
-// 		if (buttonName === "Play") {
-// 			a.play();
-// 			setButtonName("Pause");
-// 		} else {
-// 			a.pause();
-// 			setButtonName("Play");
-// 		}
-// 	};
-
-// 	const addFile = (e) => {
-// 		if (e.target.files[0]) {
-// 			setAudio(URL.createObjectURL(e.target.files[0]));
-// 			setAudioName(e.target.files[0].name);
-// 			// setAudioName([...audioName, e.target.files[0].name]);
-// 		}
-// 	};
-
-// 	return (
-// 		<div>
-// 			<input type="file" onChange={addFile} accept=".mp3, .wav" />
-// 			{/* <input type="file" onChange={addFile} accept=".mp3, .wav" multiple /> */}
-// 				<div className="audios">
-// 					<p>{audioName}</p>
-// 					{isVisible && <button onClick={handleClick}>{buttonName}</button>}
-// 				</div>
-// 		</div>
-// 	);
-// };
-
 const App = () => {
 	const [audio, setAudio] = useState("");
 	const [audios, setAudios] = useState([]);
@@ -82,36 +38,7 @@ const App = () => {
 	let selected_audios = [];
 	let selected_audio_names = [];
 
-	// useEffect(() => {
-	// 	if (a) {
-	// 		a.pause();
-	// 		a = null;
-	// 		setButtonName("Play");
-	// 	}
-	// 	if (audio) {
-	// 		a = new Audio(audio);
-	// 		a.onended = () => {
-	// 			setButtonName("Play");
-	// 		};
-	// 		setIsVisible(true);
-	// 	}
-	// }, [audio]);
-
-	// const handleClick = () => {
-	// 	if (buttonName === "Play") {
-	// 		a.play();
-	// 		setButtonName("Pause");
-	// 	} else {
-	// 		a.pause();
-	// 		setButtonName("Play");
-	// 	}
-	// };
-
 	const addFile = (e) => {
-		// if (e.target.files[0]) {
-		// 	setAudio(URL.createObjectURL(e.target.files[0]));
-		// 	setAudioName([...audioName, e.target.files[0].name]);
-		// }
 		Array.from(e.target.files).forEach((file) => {
 			if (file) {
 				selected_audios.push(URL.createObjectURL(file));
@@ -125,31 +52,87 @@ const App = () => {
 	};
 
 	return (
-		<div>
-			<div>
-				{/* <input type="file" onChange={addFile} accept=".mp3, .wav" /> */}
-				<input type="file" onChange={addFile} accept=".mp3, .wav" multiple />
-				{/* <div className="audios">
-					<p>{audioName}</p>
-					{isVisible && <button onClick={handleClick}>{buttonName}</button>}
-				</div> */}
-			</div>
-			<div>
+		// <div>
+		<Container fixed>
+			<Box
+				component="span"
+				sx={{
+					"& > :not(style)": { m: 1 },
+				}}
+				noValidate
+				autoComplete="off"
+			>
+				<div>
+					{/* <TextField
+						id="outlined-basic"
+						label=""
+						variant="outlined"
+						sx={{ width: "200px"}}
+					/>
+
+					<Button
+						variant="contained"
+						component="label"
+					>
+						<RadioButtonCheckedIcon />
+					</Button> */}
+					<Button variant="contained" component="label">
+						<AddIcon />
+						<input type="file" onChange={addFile} accept=".mp3, .wav" hidden />
+					</Button>
+				</div>
+			</Box>
+			<Box>
+				<List
+					sx={{
+						width: "100%",
+						maxWidth: 360,
+						bgcolor: "background.deepPurple[500]",
+						position: "relative",
+						overflow: "auto",
+						maxHeight: 300,
+						"& ul": { padding: 0 },
+					}}
+					subheader={<li />}
+				>
+					{audios.map((a, index) => {
+						return (
+							<li key={index}>
+								<ul>
+									<ListItem onClick={() => setAudio(a.toString())}>
+										<ListItemButton>
+											<ListItemText primary={audioName[index]} />
+										</ListItemButton>
+									</ListItem>
+								</ul>
+							</li>
+						);
+					})}
+				</List>
+			</Box>
+
+			<Box
+				component="span"
+				sx={{
+					"& > :not(style)": { m: 1 },
+				}}
+				noValidate
+				autoComplete="off"
+			>
 				<ReactAudioPlayer src={audio} autoPlay controls />
-			</div>
-			<div className="audios">
-				{audios?.map((a, index) => {
-					return (
-						<p key={index} onClick={() => setAudio(a.toString())}>
-							{audioName[index]}
-						</p>
-					);
-				})}
-			</div>
-			<div>
-				<button id="find-keywords">Find Keywords</button>
-			</div>
-		</div>
+			</Box>
+			<Box
+				component="span"
+				sx={{
+					"& > :not(style)": { m: 1 },
+				}}
+				noValidate
+				autoComplete="off"
+			>
+				<Button variant="contained">Find Keywords</Button>
+			</Box>
+			{/* </div> */}
+		</Container>
 	);
 };
 export default App;
