@@ -2,20 +2,18 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { useState } from "react";
-import ReactAudioPlayer from "react-audio-player";
-import "./App.css";
+import AddIcon from "@mui/icons-material/Add";
+import { Container } from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import AddIcon from "@mui/icons-material/Add";
-import { Container } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import * as React from "react";
+import { useState } from "react";
+import ReactAudioPlayer from "react-audio-player";
+import "./App.css";
 
 // function App() {
 // 	const [recording, setRecording] = useState([]);
@@ -52,7 +50,6 @@ const App = () => {
 	};
 
 	return (
-		// <div>
 		<Container fixed>
 			<Box
 				component="span"
@@ -131,7 +128,6 @@ const App = () => {
 			>
 				<Button variant="contained">Find Keywords</Button>
 			</Box>
-			{/* </div> */}
 		</Container>
 	);
 };
