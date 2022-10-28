@@ -75,7 +75,7 @@ import "@fontsource/roboto/700.css";
 // };
 
 const App = () => {
-	const [audio, setAudio] = useState();
+	const [audio, setAudio] = useState("");
 	const [audios, setAudios] = useState([]);
 	const [audioName, setAudioName] = useState([]);
 
@@ -116,6 +116,7 @@ const App = () => {
 			if (file) {
 				selected_audios.push(URL.createObjectURL(file));
 				selected_audio_names.push(file.name);
+				setAudio(URL.createObjectURL(file));
 			}
 		});
 
@@ -137,8 +138,12 @@ const App = () => {
 				<ReactAudioPlayer src={audio} autoPlay controls />
 			</div>
 			<div className="audios">
-				{audioName?.map((a, index) => {
-					return <p key={index}>{a}</p>;
+				{audios?.map((a, index) => {
+					return (
+						<p key={index} onClick={() => setAudio(a.toString())}>
+							{audioName[index]}
+						</p>
+					);
 				})}
 			</div>
 			<div>
