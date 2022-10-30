@@ -5,23 +5,38 @@ from urllib.parse import quote_plus
 from motor.motor_asyncio import AsyncIOMotorClient
 from odmantic import AIOEngine
 
-host = "localhost:27017"
-user = "rootuser"
-password = "rootpass"
-uri = "mongodb://%s:%s@%s" % (quote_plus(user), quote_plus(password), host)
-client = AsyncIOMotorClient(uri)
-engine = AIOEngine(client=client, database="cases")
+engine = None
 
-async def save_instances():
-	instances = [
-	    Case(name="Ronnie Abduction", recordings=[Recording(name="Anna Statement", recording_link="https://www.google.com")])#,
-	    # Case(name="Hachette Livre", founded=1826, location="FR"),
-	]
-	await engine.save_all(instances)
+def init(host, user, password, database):
+	global engine
+	uri = "mongodb://%s:%s@%s" % (quote_plus(user), quote_plus(password), host)
+	client = AsyncIOMotorClient(uri)
+	engine = AIOEngine(client=client, database=database)
+	return engine.configure_database([Case])
 
-async def execute():
-	await engine.configure_database([Case])
-	await save_instances()
+def getAllCases():
+	pass
 
-asyncio.run(execute())
+def createCase(case: Case):
+	return engine.save(case)
 
+def getCase():
+	pass
+
+def updateCase():
+	pass
+
+def deleteCase():
+	pass
+
+def createRecording():
+	pass
+
+def getRecording():
+	pass
+
+def updateRecording():
+	pass
+
+def deleteRecording():
+	pass
