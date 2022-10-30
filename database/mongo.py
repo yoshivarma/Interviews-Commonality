@@ -18,27 +18,18 @@ async def getAllCases():
 	cases = await engine.find(Case)
 	return cases
 
-async def createCase(case: Case):
+# This is an 'upsert' operation meaning that if a document already
+# exists with the same primary key, it will be overwritten. So this can
+# be used to create or update a case
+async def createOrUpdateCase(case: Case):
 	try:
 		await engine.save(case)
 	except exceptions.DuplicateKeyError:
 		print("Case could not be added as a case with the same name exists.")
 
 async def getCase(case_id: str):
-	case = await engine.find(Case, Case.id == case_id)
+	case = await engine.find_one(Case, Case.id == case_id)
 	return(case)
 
 async def deleteCase(case_id: str):
 	await engine.remove(Case, Case.id == case_id)
-
-def createRecording():
-	pass
-
-def getRecording():
-	pass
-
-def updateRecording():
-	pass
-
-def deleteRecording():
-	pass

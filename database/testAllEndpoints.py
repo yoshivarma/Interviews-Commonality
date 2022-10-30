@@ -20,7 +20,7 @@ async def test():
 			mongo.Recording(name="Anna Statement",recording_link="https://docs.google.com/document/case1rec1dummyURL")
 		])
 	print("Adding to DB: {0}".format(case1))
-	await mongo.createCase(case1)
+	await mongo.createOrUpdateCase(case1)
 
 	case2 = mongo.Case(name="LA Murder", recordings=
 		[
@@ -28,7 +28,7 @@ async def test():
 			mongo.Recording(name="Witness B Statement",recording_link="https://docs.google.com/document/case2rec2dummyURL")
 		])
 	print("\nAdding to DB: {0}".format(case2))
-	await mongo.createCase(case2)
+	await mongo.createOrUpdateCase(case2)
 
 
 	# Reading all cases
@@ -50,7 +50,7 @@ async def test():
 
 
 	print("\nRe-adding NY Abduction case")
-	await mongo.createCase(
+	await mongo.createOrUpdateCase(
 		mongo.Case(name="New York Abduction", recordings=
 		[
 			mongo.Recording(name="Anna Statement",recording_link="https://docs.google.com/document/case1rec1dummyURL")
@@ -60,7 +60,35 @@ async def test():
 	# Retrieving a case by case ID
 	print("\nRetrieving a case by case ID")
 	cases = await mongo.getAllCases()
-	case = await mongo.getCase(cases[1].id)
+	case_to_retrieve = list(filter(lambda case : case.name == "LA Murder", cases))[0]
+	case = await mongo.getCase(case_to_retrieve.id)
 	print(case)
+
+
+	# Updating a case by case ID
+	print("\nUpdating a case by case ID")
+	
+	#1. Add a recording to LA murder
+	print("\nAdding a recording to LA murder")
+	new_recording = mongo.Recording(name="Witness C Statement",recording_link="https://docs.google.com/document/case2rec3dummyURL")
+	case.recordings.append(new_recording)
+	await mongo.createOrUpdateCase(case)
+
+
+	print("\nRetrive all cases to check if new recording was added")
+	cases = await mongo.getAllCases()
+	print(cases)
+
+	
+	#2. Delete a recording
+	print("\nDeleting a recording from LA murder")
+	recording_to_delete = list(filter(lambda recording : recording.name == "Witness C Statement", case.recordings))[0]
+	case.recordings.remove(recording_to_delete)
+	await mongo.createOrUpdateCase(case)
+
+
+	print("\nRetrive all cases to check if new recording was deleted")
+	cases = await mongo.getAllCases()
+	print(cases)
 
 asyncio.run(test())
