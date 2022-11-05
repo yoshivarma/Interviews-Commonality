@@ -1,8 +1,20 @@
 from typing import Union, List
 from fastapi import FastAPI
 from pydantic import BaseModel
+from model.model import find_keywords_model
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Recording(BaseModel):
@@ -22,10 +34,13 @@ DB: List[Recording] = [
 
 @app.get("/api")
 def read_root():
-    return DB
+    keywords = find_keywords_model()
+    return keywords
 
-# @app.post("/keywords")
-# def find_keywords():
+#@app.post("/keywords")
+#def find_keywords():
+  #  keywords = find_keywords_model()
+ #   return {"keywords": keywords}
 
 
 @app.get("/items/{item_id}")
