@@ -53,7 +53,7 @@ DB: List[Recording] = [
 async def find_keywords(audios = List[UploadFile]):
     # for files in audios:
     #     print('Help')
-    return [a for a in [1, 2, 3, 3, 4, 4]]
+    return [a for a in ["apple", "banana", "chickoo"]]
     # return {"filenames": audios}
 
 
