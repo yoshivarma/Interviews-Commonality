@@ -44,7 +44,8 @@ const CssTextField = styled(TextField)({
 	input: {
 		color: "white",
 	},
-	floatingLabelFocusStyle: {
+	color: "white",
+	"&.Mui-focused": {
 		color: "white",
 	},
 	"& .MuiInput-underline:after": {
@@ -174,7 +175,7 @@ const App = () => {
 									"& .MuiOutlinedInput-root": { borderColor: "red" },
 								}}
 							/> */}
-							<CssTextField
+							{/* <CssTextField
 								label="Recording Title"
 								id="custom-css-outlined-input"
 							/>
@@ -185,7 +186,7 @@ const App = () => {
 								sx={{ background: "#DF8633" }}
 							>
 								<MicIcon fontSize="large" sx={{ color: "white" }} />
-							</Fab>
+							</Fab> */}
 							<Fab
 								variant="contained"
 								component="label"
@@ -205,19 +206,30 @@ const App = () => {
 						Case 1 Keywords
 					</Typography>
 					{keywords.length !== 0 ? (
-						<Stack direction="row" spacing={1}>
+						<Box
+							sx={{
+								display: "flex",
+								flexWrap: "wrap",
+								justifyContent: "space-around",
+								p: 5,
+								m: 1,
+								maxWidth: 600,
+								borderRadius: 1,
+							}}
+						>
 							{keywords.map((data, index) => {
 								return (
-									<ListItem key={index}>
-										<Chip
-											onClick={() => handleClick(data)}
-											label={data}
-											sx={{ background: "#DF8633" }}
-										/>
-									</ListItem>
+									// <ListItem key={index}>
+									<Chip
+										key={index}
+										onClick={() => handleClick(data)}
+										label={data}
+										sx={{ background: "#DF8633", color: "white", m:0.5 }}
+									/>
+									// </ListItem>
 								);
 							})}
-						</Stack>
+						</Box>
 					) : (
 						<Typography variant="p" sx={{ color: "#DF8633" }}>
 							No keywords yet
@@ -265,30 +277,27 @@ const App = () => {
 														fixed
 														sx={{ display: "flex", flexDirection: "column" }}
 													>
-														<div>
-															<ListItemText
-																disableTypography
-																primary={audioName[index]}
-																sx={{
-																	color: "white",
-																	fontSize: "20px",
-																	marginLeft: 1,
-																	fontWeight: "bold",
-																}}
-															/>
-														</div>
-														<div>
-															<ListItemText
-																disableTypography
-																primary={audioDuration[index]}
-																sx={{
-																	color: "#DF8633",
-																	fontSize: "12px",
-																	marginTop: -1,
-																	marginLeft: 1,
-																}}
-															/>
-														</div>
+														<ListItemText
+															disableTypography
+															primary={audioName[index]}
+															sx={{
+																color: "white",
+																fontSize: "20px",
+																marginLeft: 1,
+																fontWeight: "bold",
+															}}
+														/>
+														<Typography
+															variant="h6"
+															sx={{
+																color: "#DF8633",
+																fontSize: "12px",
+																marginTop: -1,
+																marginLeft: 1,
+															}}
+														>
+															{audioDuration[index]}
+														</Typography>
 													</Container>
 												</ListItemButton>
 											</ListItem>
