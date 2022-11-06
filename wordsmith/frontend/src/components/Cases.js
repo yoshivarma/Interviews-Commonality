@@ -2,53 +2,105 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import {
+    Alert,
 	Box,
+	Collapse,
 	Container,
 	Divider,
 	Fab,
+	IconButton,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemText,
+	TextField,
 	Typography,
 } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 
 // const Cases = ( { agentCase } ) =>
 const Cases = () => {
-	// const [agentCase, setAgentCase] = useState([]);
-	let agentCase = [
-		{
-			name: "Case 1",
-			id: 1,
-			keywords: ["apple", "namama"],
-		},
-		{
-			name: "Case 2",
-			id: 2,
-			keywords: ["apple", "namama"],
-		},
-		{
-			name: "Case 3",
-			id: 3,
-			keywords: ["apple", "namama"],
-		},
-		{
-			name: "Case 4",
-			id: 4,
-			keywords: ["apple", "namama"],
-		},
-	];
-	// <Link to={"/case/" + user.id}> {user.id}</Link>
+	const [agentCase, setAgentCase] = useState([]);
+	const [textInput, setTextInput] = useState("");
+	const [open, setOpen] = useState(false);
+
+	const handleTextInputChange = (event) => {
+		setTextInput(event.target.value);
+	};
 
 	return (
 		<Container
 			fixed
-			sx={{ textAlign: "center", alignContent: "center", marginTop: 5 }}
+			sx={{ textAlign: "start", alignContent: "center", marginTop: 5 }}
 		>
-			{" "}
+			<Collapse in={open}>
+				<Alert
+					severity="error"
+					action={
+						<IconButton
+							aria-label="close"
+							color="inherit"
+							size="small"
+							onClick={() => {
+								setOpen(false);
+							}}
+						>
+							<CloseIcon fontSize="inherit" />
+						</IconButton>
+					}
+					sx={{ mb: 2 }}
+				>
+					Write a name first!
+				</Alert>
+			</Collapse>
 			<Box>
-				<Typography variant="h4" sx={{ color: "white" }}>
+				<TextField
+					required
+					hiddenLabel
+					id="filled-hidden-label-small"
+					size="small"
+					placeholder="Case Name"
+					variant="filled"
+					sx={{
+						input: { color: "white" },
+						label: { color: "orange" },
+						background: "#80768D",
+						borderRadius: 1,
+					}}
+					onChange={handleTextInputChange}
+					value={textInput}
+				/>
+				<Fab
+					variant="contained"
+					component="label"
+					sx={{
+						background: "#DF8633",
+						marginLeft: 1,
+						height: "40px",
+						width: "40px",
+					}}
+					onClick={() => {
+						if (textInput.length === 0) {
+							setOpen(true);
+						} else
+						{
+							setAgentCase([
+								...agentCase,
+								{
+									name: textInput,
+									id: Math.floor(Math.random() * 10000000000000),
+									recordings: [],
+                                    keywords: [],
+								},
+							]);
+						}
+					}}
+				>
+					<AddIcon fontSize="large" sx={{ color: "white" }} />
+				</Fab>
+				<Typography variant="h4" sx={{ color: "white", marginTop: 2 }}>
 					Cases
 				</Typography>
 				<List
@@ -114,8 +166,8 @@ const Cases = () => {
 													{a.keywords}
 												</Typography>
 											</Container>
-											<Link to={"/case/"+a.id}>
-												{" "}
+											<Link to={"/case/" + a.id}>
+												
 												<Fab
 													variant="contained"
 													component="label"
@@ -124,7 +176,6 @@ const Cases = () => {
 														height: "40px",
 														width: "40px",
 													}}
-													onClick={() => console.log("Go back to cases!")}
 												>
 													<ChevronRightIcon
 														fontSize="large"

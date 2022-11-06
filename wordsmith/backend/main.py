@@ -49,13 +49,21 @@ DB: List[Recording] = [
 #   return {"keywords": keywords}
 
 
+@app.get("/")
+def get_all_cases():
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+
+@app.get("/getCase")
+def get_case_by_id(id):
+    return {name: "dsfdsf", id: "dfsdfsd", recordings: [12, 23, 34, 34, 23, 42, 34, 2], keywords: [12, 23, 34, 34, 23, 42, 34, 2]}
+
 @app.post("/findkeywords")
-async def find_keywords(audios = List[UploadFile]):
+async def find_keywords(audios=List[UploadFile]):
     # for files in audios:
     #     print('Help')
     return [a for a in ["apple", "banana", "chickoo"]]
     # return {"filenames": audios}
-
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):

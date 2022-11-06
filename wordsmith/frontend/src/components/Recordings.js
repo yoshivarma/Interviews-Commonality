@@ -3,11 +3,10 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AddIcon from "@mui/icons-material/Add";
-import MicIcon from "@mui/icons-material/Mic";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CloseIcon from "@mui/icons-material/Close";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { Link } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MicIcon from "@mui/icons-material/Mic";
 import {
 	Accordion,
 	AccordionDetails,
@@ -19,18 +18,16 @@ import {
 	Divider,
 	Fab,
 	IconButton,
-	Stack,
 	TextField,
 	Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-// import CssBaseline from "@mui/material/CssBaseline";
+import { Link } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import getBlobDuration from "get-blob-duration";
 import * as React from "react";
@@ -38,50 +35,13 @@ import { useState } from "react";
 import ReactAudioPlayer from "react-audio-player";
 import { useParams } from "react-router-dom";
 
-// const darkTheme = createTheme({
-// 	palette: {
-// 		background: {
-// 			default: "#1A0B23",
-// 		},
-// 	},
-// });
-
-const CssTextField = styled(TextField)({
-	"& label.Mui-focused": {
-		color: "green",
-	},
-	input: {
-		color: "white",
-	},
-	color: "white",
-	"&.Mui-focused": {
-		color: "white",
-	},
-	"& .MuiInput-underline:after": {
-		borderBottomColor: "green",
-	},
-	"& .MuiOutlinedInput-root": {
-		"& fieldset": {
-			borderColor: "white",
-			color: "white",
-		},
-		"&:hover fieldset": {
-			borderColor: "yellow",
-		},
-		"&.Mui-focused fieldset": {
-			borderColor: "green",
-		},
-	},
-	marginRight: 10,
-});
-
 const Recordings = () => {
 	const [audio, setAudio] = useState("");
 	const [audios, setAudios] = useState([]);
 	const [audioName, setAudioName] = useState([]);
 	const [audioDuration, setAudioDuration] = useState([]);
 	const [keywords, setKeywords] = useState([]);
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 
 	const { id } = useParams();
 
@@ -164,9 +124,6 @@ const Recordings = () => {
 	};
 
 	return (
-		// <ThemeProvider theme={darkTheme}>
-		// 	<CssBaseline />
-
 		<Container
 			fixed
 			sx={{ textAlign: "center", alignContent: "center", marginTop: 5 }}
@@ -204,7 +161,6 @@ const Recordings = () => {
 					autoComplete="off"
 				>
 					<Link to={"/"}>
-						{" "}
 						<Fab
 							variant="contained"
 							component="label"
@@ -214,26 +170,19 @@ const Recordings = () => {
 							<ChevronLeftIcon fontSize="large" sx={{ color: "white" }} />
 						</Fab>
 					</Link>
-					{/* <div> */}
 					<TextField
 						hiddenLabel
 						id="filled-hidden-label-small"
 						size="small"
 						placeholder="Recording Title"
-						// color="warning"
-						focused
+						variant="filled"
 						sx={{
 							input: { color: "white" },
 							label: { color: "orange" },
-							border: "none",
+							background: "#80768D",
 							borderRadius: 1,
 						}}
 					/>
-
-					{/* <CssTextField
-								label="Recording Title"
-								id="custom-css-outlined-input"
-							/> */}
 
 					<Fab
 						variant="contained"
@@ -250,15 +199,11 @@ const Recordings = () => {
 							marginLeft: 1,
 							height: "40px",
 							width: "40px",
-							// position: "fixed",
-							// bottom: (theme) => theme.spacing(2),
-							// right: (theme) => theme.spacing(2),
 						}}
 					>
 						<AddIcon fontSize="large" sx={{ color: "white" }} />
 						<input type="file" onChange={addFile} accept=".mp3, .wav" hidden />
 					</Fab>
-					{/* </div> */}
 				</Box>
 				<Typography variant="h4" sx={{ color: "white" }}>
 					Case {id} Keywords
