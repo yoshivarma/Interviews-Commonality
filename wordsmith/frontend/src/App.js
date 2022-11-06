@@ -4,8 +4,12 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AddIcon from "@mui/icons-material/Add";
 import MicIcon from "@mui/icons-material/Mic";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import {
+	Accordion,
+	AccordionDetails,
+	AccordionSummary,
 	Chip,
 	Container,
 	Divider,
@@ -206,44 +210,114 @@ const App = () => {
 						Case 1 Keywords
 					</Typography>
 					{keywords.length !== 0 ? (
-						<Box
-							sx={{
-								display: "flex",
-								flexWrap: "wrap",
-								justifyContent: "space-around",
-								p: 5,
-								m: 1,
-								maxWidth: 600,
-								borderRadius: 1,
-							}}
-						>
-							{keywords.map((data, index) => {
-								return (
-									// <ListItem key={index}>
-									<Chip
-										key={index}
-										onClick={() => handleClick(data)}
-										label={data}
-										sx={{ background: "#DF8633", color: "white", m:0.5 }}
-									/>
-									// </ListItem>
-								);
-							})}
-						</Box>
+						keywords.length < 4 ? (
+							<Box
+								sx={{
+									display: "flex",
+									flexWrap: "wrap",
+									justifyContent: "space-around",
+									p: 5,
+									m: 1,
+									maxWidth: 600,
+									borderRadius: 1,
+								}}
+							>
+								{keywords.map((data, index) => {
+									return (
+										// <ListItem key={index}>
+										<Chip
+											key={index}
+											onClick={() => handleClick(data)}
+											label={data}
+											sx={{ background: "#DF8633", color: "white", m: 0.5 }}
+										/>
+										// </ListItem>
+									);
+								})}
+							</Box>
+						) : (
+							<>
+								{/* <Box
+									sx={{
+										display: "flex",
+										flexWrap: "wrap",
+										justifyContent: "space-around",
+										p: 5,
+										m: 1,
+										maxWidth: 600,
+										borderRadius: 1,
+									}}
+								>
+									{keywords.slice(0,3).map((data, index) => {
+										return (
+											// <ListItem key={index}>
+											<Chip
+												key={index}
+												onClick={() => handleClick(data)}
+												label={data}
+												sx={{ background: "#DF8633", color: "white", m: 0.5 }}
+											/>
+											// </ListItem>
+										);
+									})}
+								</Box> */}
+								<Accordion
+									sx={{
+										backgroundColor: "#1A0B23",
+										border: "none",
+									}}
+								>
+									<AccordionSummary
+										expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+										aria-controls="panel1a-content"
+										id="panel1a-header"
+									>
+										<Typography sx={{ color: "white" }}>
+											View All {keywords.length} Keywords
+										</Typography>
+									</AccordionSummary>
+									<AccordionDetails
+										sx={{
+											display: "flex",
+											flexWrap: "wrap",
+											justifyContent: "space-around",
+											// p: 5,
+											// m: 1,
+											maxWidth: 400,
+											borderRadius: 1,
+										}}
+									>
+										{keywords.map((data, index) => {
+											return (
+												<Chip
+													key={index}
+													onClick={() => handleClick(data)}
+													label={data}
+													sx={{ background: "#DF8633", color: "white", m: 0.5 }}
+												/>
+											);
+										})}
+									</AccordionDetails>
+								</Accordion>
+							</>
+						)
 					) : (
 						<Typography variant="p" sx={{ color: "#DF8633" }}>
 							No keywords yet
 						</Typography>
 					)}
 					<Box>
+						<Typography variant="h4" sx={{ color: "white" }}>
+							Recordings
+						</Typography>
 						<List
 							sx={{
 								width: "100%",
-								maxWidth: 360,
+								maxWidth: 400,
 								bgcolor: "background.deepPurple[500]",
 								position: "relative",
 								overflow: "auto",
-								maxHeight: 300,
+								maxHeight: 450,
 								"& ul": { padding: 0 },
 							}}
 							subheader={<li />}
