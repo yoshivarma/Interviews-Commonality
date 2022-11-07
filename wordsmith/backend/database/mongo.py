@@ -3,7 +3,7 @@ from odmantic_models.case import Case, Recording
 
 from urllib.parse import quote_plus
 from motor.motor_asyncio import AsyncIOMotorClient
-from odmantic import AIOEngine, exceptions
+from odmantic import AIOEngine, exceptions, ObjectId
 
 engine = None
 
@@ -31,5 +31,5 @@ async def getCase(case_id: str):
 	case = await engine.find_one(Case, Case.id == case_id)
 	return(case)
 
-async def deleteCase(case_id: str):
+async def deleteCase(case_id: ObjectId):
 	await engine.remove(Case, Case.id == case_id)
