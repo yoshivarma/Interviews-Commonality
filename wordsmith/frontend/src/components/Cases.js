@@ -20,14 +20,54 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
-// const Cases = ( { agentCase } ) =>
+// const Cases = ( { agentCases } ) =>
 const Cases = () => {
-	const [agentCase, setAgentCase] = useState([]);
+	
+	const getAgentCases = async () => {
+		const config = {
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+			},
+		};
+
+		try {
+			let result = await axios.get("http://localhost:8000/api/", config);
+			setAgentCases(result.data);
+			console.log(result.data);
+		} catch (error) {
+			console.error(error); // NOTE - use "error.response.data` (not "error")
+		}
+	};
+
+	useEffect(() => {
+        getAgentCases();
+    }, []);
+
+	const [agentCases, setAgentCases] = useState([]);
 	const [textInput, setTextInput] = useState("");
 	const [open, setOpen] = useState(false);
 
 	const handleTextInputChange = (event) => {
 		setTextInput(event.target.value);
+	};
+
+	const addAgentCase = async () => {
+
+		const agentCase = {name: textInput}
+		
+		const config = {
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+			},
+		};
+
+		try {
+			let result = await axios.post("http://localhost:8000/api/cases", agentCase, config);
+			// setAgentCases(result.data);
+			// console.log(result.data);
+		} catch (error) {
+			console.error(error); // NOTE - use "error.response.data` (not "error")
+		}
 	};
 
 	return (
@@ -86,15 +126,7 @@ const Cases = () => {
 							setOpen(true);
 						} else
 						{
-							setAgentCase([
-								...agentCase,
-								{
-									name: textInput,
-									id: Math.floor(Math.random() * 10000000000000),
-									recordings: [],
-                                    keywords: [],
-								},
-							]);
+							addAgentCase().then(() => getAgentCases())
 						}
 					}}
 				>
@@ -115,7 +147,7 @@ const Cases = () => {
 					}}
 					subheader={<li />}
 				>
-					{agentCase.map((a, index) => {
+					{agentCases.map((a, index) => {
 						return (
 							<li key={index}>
 								<ul>

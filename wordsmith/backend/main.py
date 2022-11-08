@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile
 from typing import List
 from odmantic import ObjectId
+from starlette.middleware.cors import CORSMiddleware
 
 # Database imports
 import database.mongo as mongo
@@ -17,6 +18,15 @@ database = "cases"
 
 app = FastAPI()
 
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def startup():
