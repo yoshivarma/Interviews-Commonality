@@ -2,6 +2,7 @@ from fastapi import Body, FastAPI, UploadFile, File
 from typing import List, Union, Optional
 from odmantic import ObjectId
 from starlette.middleware.cors import CORSMiddleware
+import whisper
 
 # Database imports
 import database.mongo as mongo
@@ -53,7 +54,7 @@ async def delete_case(case_id: ObjectId):
 async def get_case(case_id: ObjectId):
     case = await mongo.getCase(case_id)
     recordings = await mongo.getAllRecordingsForCase(case_id)
-    return {"case_data": case, "recordings": recordings} 
+    return {"case_data": case, "recordings": recordings}
 
 
 @app.get("/api/cases/{case_id}/recordings", response_model=List[Recording])
@@ -68,7 +69,7 @@ async def get_recordings_for_case(case_id: ObjectId):
 # async def add_recording_to_case(case_id: ObjectId, recording_file = UploadFile(), recording_name = Body()):
 # async def add_recording_to_case(case_id: ObjectId, recording_file: Union[UploadFile, None] = None):
 async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[UploadFile] = None):
-    
+
     # print(case_id)
     # print(recording_file.filename)
 
@@ -98,9 +99,14 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
         #5. Pass the link to transcribe the audio (Mehul's code - accepts gdrive URL, returns transcription)
         # TODO - Add call to Mehul's code
+        model = whisper.load_model("base")
+
+        result = model.transcribe(recording_file)
+
+        transcript = result["text"]
 
         # 6. Upload transcription to google drive and retrieve link
-        recording.transcript_link = "https://docs.google.com/document/dummytranscriptURL" #dummy for now
+        recording.transcript_link = "https://docs.google.com/document/dummyrecordingURL" #dummy for now
 
         # 7. Save transcript link for the recording in the database
         recording = await mongo.createOrUpdateRecording(recording)
@@ -109,11 +115,12 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # TODO - Add code for call (accepts list of google drive URLs and returns list of common words)
 
         # 9. Save the retrieved common phrases in the database
-        
+
         # 10. Set keywords_loaded to True
         case.keywords_loaded = True
         case = await mongo.createOrUpdateCase(case)
-        return {"filename" : recording_file.filename}
+        return {"filename" : transcript}
+        # return {"filename" : recording_file.filename}
 
     ## End of async block
 
