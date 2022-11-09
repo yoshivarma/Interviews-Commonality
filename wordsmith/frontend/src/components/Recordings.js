@@ -106,7 +106,7 @@ const Recordings = () => {
 
 				const config = {
 					headers: {
-						"content-type": "multipart/form-data",
+						"Content-Type": "multipart/form-data",
 						// "Access-Control-Allow-Origin": "*",
 					},
 				};
