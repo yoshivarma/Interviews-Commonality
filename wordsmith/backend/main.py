@@ -62,8 +62,6 @@ async def get_recordings_for_case(case_id: ObjectId):
     recordings = await mongo.getAllRecordingsForCase(case_id)
     return recordings
 
-
-
 @app.post("/api/cases/{case_id}/recordings")
 # async def add_recording_to_case(case_id: ObjectId, recording_file: UploadFile, recording_name: str = Body()):
 # async def add_recording_to_case(case_id: ObjectId, recording_file = UploadFile(), recording_name = Body()):
@@ -101,7 +99,11 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # TODO - Add call to Mehul's code
         model = whisper.load_model("base")
 
-        result = model.transcribe(recording_file)
+        result = model.transcribe(
+            "http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3")
+     
+        # result = model.transcribe(
+        #     "https://drive.google.com/file/d/166358cvGzqTfBjEXCbK14pIX_YUvBkma/view?usp=sharing")
 
         transcript = result["text"]
 
@@ -120,7 +122,6 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         case.keywords_loaded = True
         case = await mongo.createOrUpdateCase(case)
         return {"filename" : transcript}
-        # return {"filename" : recording_file.filename}
 
     ## End of async block
 
