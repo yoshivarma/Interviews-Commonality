@@ -117,7 +117,7 @@ const Recordings = () => {
 						formData,
 						config
 					);
-					// console.log(result.data);
+					console.log(result.data);
 				} catch (error) {
 					console.error(error); // NOTE - use "error.response.data` (not "error")
 				}
@@ -390,11 +390,11 @@ const Recordings = () => {
 						}}
 						subheader={<li />}
 					>
-						{audios.map((a, index) => {
+						{recordings.map((a, index) => {
 							return (
 								<li key={index}>
 									<ul>
-										<ListItem onClick={() => setAudio(a.toString())}>
+										<ListItem onClick={() => setAudio(a.recording_link.toString())}>
 											<ListItemButton>
 												<Box
 													component="span"
@@ -421,7 +421,7 @@ const Recordings = () => {
 												>
 													<ListItemText
 														disableTypography
-														primary={audioName[index]}
+														primary={a.name}
 														sx={{
 															color: "white",
 															fontSize: "20px",
