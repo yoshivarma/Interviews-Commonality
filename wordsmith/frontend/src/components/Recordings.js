@@ -40,10 +40,10 @@ const Recordings = () => {
 	const [audios, setAudios] = useState([]);
 	const [audioName, setAudioName] = useState([]);
 	const [audioDuration, setAudioDuration] = useState([]);
-	
+
 	const [keywords, setKeywords] = useState([]);
-	const [caseName, setCaseName] = useState("")
-	const [recordings, setRecordings] = useState([])
+	const [caseName, setCaseName] = useState("");
+	const [recordings, setRecordings] = useState([]);
 
 	const [open, setOpen] = useState(false);
 
@@ -57,14 +57,18 @@ const Recordings = () => {
 		const config = {
 			headers: {
 				"Access-Control-Allow-Origin": "*",
+				"content-type": "multipart/form-data",
 			},
 		};
 
 		try {
-			let result = await axios.get("http://localhost:8000/api/cases/" + id, config);
-			setKeywords(result.data.case_data.keywords)
-			setCaseName(result.data.case_data.name)
-			setRecordings(result.data.recordings)
+			let result = await axios.get(
+				"http://localhost:8000/api/cases/" + id,
+				config
+			);
+			setKeywords(result.data.case_data.keywords);
+			setCaseName(result.data.case_data.name);
+			setRecordings(result.data.recordings);
 			console.log(result.data);
 		} catch (error) {
 			console.error(error); // NOTE - use "error.response.data` (not "error")
@@ -72,9 +76,8 @@ const Recordings = () => {
 	};
 
 	useEffect(() => {
-        getCaseDetails();
-    }, []);
-
+		getCaseDetails();
+	}, []);
 
 	const convertToMinsAndSecs = (d) => {
 		var h = Math.floor(d / 3600);
@@ -91,29 +94,36 @@ const Recordings = () => {
 	const addRecording = (e) => {
 		Array.from(e.target.files).forEach(async (file) => {
 			if (file) {
-				const recording_name = file.name.split(".")[0].charAt(0).toUpperCase() + file.name.split(".")[0].slice(1)
-				const recording_file = URL.createObjectURL(file)
-		
+				const recording_name =
+					file.name.split(".")[0].charAt(0).toUpperCase() +
+					file.name.split(".")[0].slice(1);
+				const recording_file = URL.createObjectURL(file);
+
 				const formData = new FormData();
-				formData.append("recording_name", recording_name);
-				formData.append("recording_file", recording_file)
+				// formData.append("recording_name", recording_name);
+				formData.append("recording_file", file);
+				// formData.append("recording_file", file, file.name)
 
 				const config = {
 					headers: {
 						"content-type": "multipart/form-data",
-						"Access-Control-Allow-Origin": "*",
+						// "Access-Control-Allow-Origin": "*",
 					},
 				};
 
 				try {
-					let result = await axios.post("http://localhost:8000/api/cases/" + id + "/recordings", formData, config);
+					let result = await axios.post(
+						"http://localhost:8000/api/cases/" + id + "/recordings",
+						formData,
+						config
+					);
 					// console.log(result.data);
 				} catch (error) {
 					console.error(error); // NOTE - use "error.response.data` (not "error")
 				}
 			}
 		});
-	}
+	};
 
 	const addFile = (e) => {
 		Array.from(e.target.files).forEach(async (file) => {
@@ -256,7 +266,12 @@ const Recordings = () => {
 						}}
 					>
 						<AddIcon fontSize="large" sx={{ color: "white" }} />
-						<input type="file" onChange={addRecording} accept=".mp3, .wav" hidden />
+						<input
+							type="file"
+							onChange={addRecording}
+							accept=".mp3, .wav"
+							hidden
+						/>
 					</Fab>
 				</Box>
 				<Typography variant="h4" sx={{ color: "white" }}>
