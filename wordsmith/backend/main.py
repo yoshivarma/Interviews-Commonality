@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import Body, FastAPI, UploadFile
 from typing import List
 from odmantic import ObjectId
 from starlette.middleware.cors import CORSMiddleware
@@ -52,7 +52,8 @@ async def delete_case(case_id: ObjectId):
 @app.get("/api/cases/{case_id}")
 async def get_case(case_id: ObjectId):
     case = await mongo.getCase(case_id)
-    return case
+    recordings = await mongo.getAllRecordingsForCase(case_id)
+    return {"case_data": case, "recordings": recordings} 
 
 
 @app.get("/api/cases/{case_id}/recordings", response_model=List[Recording])
@@ -61,9 +62,11 @@ async def get_recordings_for_case(case_id: ObjectId):
     return recordings
 
 
-@app.put("/api/cases/{case_id}/recordings")
-async def add_recording_to_case(case_id: ObjectId, recording_name: str, recording_file: UploadFile):
+@app.post("/api/cases/{case_id}/recordings")
+async def add_recording_to_case(case_id: ObjectId, recording_file: UploadFile, recording_name: str = Body()):
     
+    print(case_id)
+    print(recording_name)
     #1. Get case to which recording is to be added
     case = await mongo.getCase(case_id)
 
