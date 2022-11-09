@@ -23,6 +23,10 @@ import CloseIcon from "@mui/icons-material/Close";
 // const Cases = ( { agentCases } ) =>
 const Cases = () => {
 	
+	const [agentCases, setAgentCases] = useState([]);
+	const [textInput, setTextInput] = useState("");
+	const [open, setOpen] = useState(false);
+	
 	const getAgentCases = async () => {
 		const config = {
 			headers: {
@@ -42,10 +46,6 @@ const Cases = () => {
 	useEffect(() => {
         getAgentCases();
     }, []);
-
-	const [agentCases, setAgentCases] = useState([]);
-	const [textInput, setTextInput] = useState("");
-	const [open, setOpen] = useState(false);
 
 	const handleTextInputChange = (event) => {
 		setTextInput(event.target.value);
