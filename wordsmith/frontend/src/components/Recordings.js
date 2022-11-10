@@ -58,6 +58,7 @@ const Recordings = () => {
 			headers: {
 				"Access-Control-Allow-Origin": "*",
 				"content-type": "multipart/form-data",
+				"cache-control": "no-store"
 			},
 		};
 
@@ -91,7 +92,7 @@ const Recordings = () => {
 		return final_duration;
 	};
 
-	const addRecording = (e) => {
+	const addRecording = async (e) => {
 		Array.from(e.target.files).forEach(async (file) => {
 			if (file) {
 				const recording_name =
@@ -268,7 +269,9 @@ const Recordings = () => {
 						<AddIcon fontSize="large" sx={{ color: "white" }} />
 						<input
 							type="file"
-							onChange={addRecording}
+							onChange={(e) => {
+								addRecording(e).then(() => getCaseDetails())
+							}}
 							accept=".mp3, .wav"
 							hidden
 						/>
