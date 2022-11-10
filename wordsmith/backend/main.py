@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 import whisper
 
 # Database imports
-import database.mongo as mongo
+import mongo
 
 # Model imports
 from odmantic_models.case import Case
@@ -63,13 +63,7 @@ async def get_recordings_for_case(case_id: ObjectId):
     return recordings
 
 @app.post("/api/cases/{case_id}/recordings")
-# async def add_recording_to_case(case_id: ObjectId, recording_file: UploadFile, recording_name: str = Body()):
-# async def add_recording_to_case(case_id: ObjectId, recording_file = UploadFile(), recording_name = Body()):
-# async def add_recording_to_case(case_id: ObjectId, recording_file: Union[UploadFile, None] = None):
 async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[UploadFile] = None):
-
-    # print(case_id)
-    # print(recording_file.filename)
 
     if not recording_file:
         return {"message": "No upload file sent"}
@@ -92,20 +86,20 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
         #4. Upload the passed file to google drive and retrieve a link, save this link in database for recording
         # TODO - Add code
-        recording.recording_link = "https://docs.google.com/document/dummyrecordingURL" #dummy for now
+        recording.recording_link = "https://drive.google.com/uc?id=1IaIkNt7Ur5DySVk0c57BmlPJKJ7yYDFj" #dummy for now
         recording = await mongo.createOrUpdateRecording(recording)
 
         #5. Pass the link to transcribe the audio (Mehul's code - accepts gdrive URL, returns transcription)
         # TODO - Add call to Mehul's code
-        model = whisper.load_model("base")
+        # model = whisper.load_model("base")
 
-        result = model.transcribe(
-            "http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3")
-     
         # result = model.transcribe(
-        #     "https://drive.google.com/file/d/166358cvGzqTfBjEXCbK14pIX_YUvBkma/view?usp=sharing")
+        #     "http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3")
+     
+        # # result = model.transcribe(
+        # #     "https://drive.google.com/file/d/166358cvGzqTfBjEXCbK14pIX_YUvBkma/view?usp=sharing")
 
-        transcript = result["text"]
+        # transcript = result["text"]
 
         # 6. Upload transcription to google drive and retrieve link
         recording.transcript_link = "https://docs.google.com/document/dummyrecordingURL" #dummy for now
@@ -121,7 +115,8 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # 10. Set keywords_loaded to True
         case.keywords_loaded = True
         case = await mongo.createOrUpdateCase(case)
-        return {"filename" : transcript}
+        # return {"filename" : transcript}
+        return {"filename" : recording_file.filename}
 
     ## End of async block
 

@@ -6,7 +6,7 @@ from typing import Optional
 
 class Recording(Model):
 	name: str
-	case_id: ObjectId
+	case_id: ObjectId = Field(index=True)
 	recording_link: Optional[AnyUrl] = None
 	transcript_link: Optional[AnyUrl] = None
 
