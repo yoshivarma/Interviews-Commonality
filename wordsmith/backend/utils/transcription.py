@@ -6,7 +6,7 @@ import whisper
 
 model = whisper.load_model("base")
 
-# Accepts an recording link and
+# Accepts a recording link and
 # returns the transcription for it
 def transcribe(recording_link):
         result = model.transcribe(recording_link)
