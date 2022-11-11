@@ -2,6 +2,8 @@ from fastapi import Body, FastAPI, UploadFile, File
 from typing import List, Union, Optional
 from odmantic import ObjectId
 from starlette.middleware.cors import CORSMiddleware
+from utils.gdrive_upload import *
+from io import BytesIO
 import whisper
 
 # Database imports
@@ -84,9 +86,9 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         case.keywords_loaded = False
         case = await mongo.createOrUpdateCase(case)
 
-        #4. Upload the passed file to google drive and retrieve a link, save this link in database for recording
-        # TODO - Add code
-        recording.recording_link = "https://drive.google.com/uc?id=1IaIkNt7Ur5DySVk0c57BmlPJKJ7yYDFj" #dummy for now
+    
+        recording.recording_link = upload_file(recording_file.filename, recording_file.file, recording_file.content_type)
+        
         recording = await mongo.createOrUpdateRecording(recording)
 
         #5. Pass the link to transcribe the audio (Mehul's code - accepts gdrive URL, returns transcription)
@@ -102,7 +104,7 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # transcript = result["text"]
 
         # 6. Upload transcription to google drive and retrieve link
-        recording.transcript_link = "https://docs.google.com/document/dummyrecordingURL" #dummy for now
+        recording.transcript_link = "https://docs.google.com/document/dummytranscriptURL" #dummy for now
 
         # 7. Save transcript link for the recording in the database
         recording = await mongo.createOrUpdateRecording(recording)

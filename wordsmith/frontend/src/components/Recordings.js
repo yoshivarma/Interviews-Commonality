@@ -98,17 +98,13 @@ const Recordings = () => {
 				const recording_name =
 					file.name.split(".")[0].charAt(0).toUpperCase() +
 					file.name.split(".")[0].slice(1);
-				const recording_file = URL.createObjectURL(file);
 
 				const formData = new FormData();
-				// formData.append("recording_name", recording_name);
-				formData.append("recording_file", file);
-				// formData.append("recording_file", file, file.name)
+				formData.append("recording_file", file, file.name);
 
 				const config = {
 					headers: {
 						"Content-Type": "multipart/form-data",
-						// "Access-Control-Allow-Origin": "*",
 					},
 				};
 
