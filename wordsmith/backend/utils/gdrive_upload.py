@@ -22,6 +22,7 @@ json_keyfile_dict = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/icdriveuploader%40interviews-commonality.iam.gserviceaccount.com"
 }
+
 gauth.credentials = ServiceAccountCredentials.from_json_keyfile_dict(json_keyfile_dict, scope)
 
 drive = GoogleDrive(gauth)
@@ -32,17 +33,17 @@ GDRIVE_FILE_PREFIX = "https://drive.google.com/uc?id="
 # This is the id of the folder in gdrive that we will be uploading to
 FOLDER_ID = "1aOaC7ZAs_wwlgSb_kf3s5hTJzOVNC-3H"
 
-# This is the name of the temporary folder on the server
-# to which files are uploaded before uploading to GDrive
-TEMP_FOLDER_NAME = "temp"
-
-# Uploads a file to given gdrive account and returns its URL
+# Uploads audio file to given gdrive account and returns its URL
 # The files are uploaded to a folder that has view
 # access for everyone with a link. This is more 
 # permissible than it needs to be and can be updated
 # by granting the frontend permissions
-def upload_file(file_name, file_content, file_type):
+def upload_audio_file(file_name, file_content, file_type):
 	try:
+
+		# This is the name of the temporary folder on the server
+		# to which files are uploaded before uploading to GDrive
+		TEMP_FOLDER_NAME = "temp"
 
 		#	1. First temporarily store the file on the server since pydrive
 		# doesn't seem to have a way to directly upload file contents
@@ -73,6 +74,28 @@ def upload_file(file_name, file_content, file_type):
 		if os.path.exists(file_location):
 		  os.remove(file_location)
 
+		return(gdrive_file_url)
+
+	except BaseException:
+		logging.exception("An exception was thrown!")
+
+
+# Uploads text file to given gdrive account and returns its URL
+# The files are uploaded to a folder that has view
+# access for everyone with a link. This is more 
+# permissible than it needs to be and can be updated
+# by granting the frontend permissions
+def upload_text_file(file_content):
+	try:
+
+		gdrive_file = drive.CreateFile(
+			{
+				'parents': [{'id': FOLDER_ID}],
+			}
+		) 
+		gdrive_file.SetContentString(file_content)
+		gdrive_file.Upload()
+		gdrive_file_url = GDRIVE_FILE_PREFIX + gdrive_file['id']
 		return(gdrive_file_url)
 
 	except BaseException:

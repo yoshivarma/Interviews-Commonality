@@ -3,8 +3,8 @@ from typing import List, Union, Optional
 from odmantic import ObjectId
 from starlette.middleware.cors import CORSMiddleware
 from utils.gdrive_upload import *
+from utils.transcription import *
 from io import BytesIO
-import whisper
 
 # Database imports
 import mongo
@@ -86,25 +86,15 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         case.keywords_loaded = False
         case = await mongo.createOrUpdateCase(case)
 
-    
-        recording.recording_link = upload_file(recording_file.filename, recording_file.file, recording_file.content_type)
-        
+        #4. Upload file to google drive and get the link
+        recording.recording_link = upload_audio_file(recording_file.filename, recording_file.file, recording_file.content_type)
         recording = await mongo.createOrUpdateRecording(recording)
 
-        #5. Pass the link to transcribe the audio (Mehul's code - accepts gdrive URL, returns transcription)
-        # TODO - Add call to Mehul's code
-        # model = whisper.load_model("base")
-
-        # result = model.transcribe(
-        #     "http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3")
-     
-        # # result = model.transcribe(
-        # #     "https://drive.google.com/file/d/166358cvGzqTfBjEXCbK14pIX_YUvBkma/view?usp=sharing")
-
-        # transcript = result["text"]
+        #5. Get transcription of the uploaded file
+        transcription = transcribe(recording.recording_link)
 
         # 6. Upload transcription to google drive and retrieve link
-        recording.transcript_link = "https://docs.google.com/document/dummytranscriptURL" #dummy for now
+        recording.transcript_link = upload_text_file(transcription)
 
         # 7. Save transcript link for the recording in the database
         recording = await mongo.createOrUpdateRecording(recording)
