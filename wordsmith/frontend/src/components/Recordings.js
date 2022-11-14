@@ -7,6 +7,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MicIcon from "@mui/icons-material/Mic";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
 	Accordion,
 	AccordionDetails,
@@ -121,6 +122,13 @@ const Recordings = () => {
 			}
 		});
 	};
+
+
+	const deleteRecording = async (r_id) => {
+		await axios.delete("http://localhost:8000/api/cases/" + id + "/recordings/"+ r_id );
+
+		getCaseDetails();
+	}; 
 
 	const addFile = (e) => {
 		Array.from(e.target.files).forEach(async (file) => {
@@ -393,7 +401,9 @@ const Recordings = () => {
 							return (
 								<li key={index}>
 									<ul>
-										<ListItem onClick={() => setAudio(a.recording_link.toString())}>
+										<ListItem
+											onClick={() => setAudio(a.recording_link.toString())}
+										>
 											<ListItemButton>
 												<Box
 													component="span"
@@ -418,16 +428,33 @@ const Recordings = () => {
 													fixed
 													sx={{ display: "flex", flexDirection: "column" }}
 												>
-													<ListItemText
-														disableTypography
-														primary={a.name}
-														sx={{
-															color: "white",
-															fontSize: "20px",
-															marginLeft: 1,
-															fontWeight: "bold",
-														}}
-													/>
+													<Container sx={{display: "flex", flexDireciton: "row"}}>
+														<ListItemText
+															disableTypography
+															primary={a.name}
+															sx={{
+																color: "white",
+																fontSize: "20px",
+																marginLeft: 1,
+																fontWeight: "bold",
+															}}
+														/>
+														<Fab
+															variant="contained"
+															component="label"
+															sx={{
+																background: "none",
+																height: "40px",
+																width: "40px",
+															}}
+															onClick={() => deleteRecording(a.id)}
+														>
+															<DeleteIcon
+																fontSize="large"
+																sx={{ color: "white" }}
+															/>
+														</Fab>
+													</Container>
 													<Typography
 														variant="h6"
 														sx={{

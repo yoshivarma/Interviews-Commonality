@@ -19,6 +19,7 @@ import {
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // const Cases = ( { agentCases } ) =>
 const Cases = () => {
@@ -45,7 +46,16 @@ const Cases = () => {
 
 	useEffect(() => {
         getAgentCases();
-    }, []);
+	}, [] );
+	
+
+	const deleteCase = async ( id ) =>
+	{
+		await axios
+			.delete( "http://localhost:8000/api/cases/" + id );
+		
+		getAgentCases()
+	} 
 
 	const handleTextInputChange = (event) => {
 		setTextInput(event.target.value);
@@ -198,8 +208,22 @@ const Cases = () => {
 													{a.keywords}
 												</Typography>
 											</Container>
+											<Fab
+												variant="contained"
+												component="label"
+												sx={{
+													background: "none",
+													height: "40px",
+													width: "40px",
+												}}
+												onClick={() => deleteCase(a.id)}
+											>
+												<DeleteIcon
+													fontSize="large"
+													sx={{ color: "white" }}
+												/>
+											</Fab>
 											<Link to={"/case/" + a.id}>
-												
 												<Fab
 													variant="contained"
 													component="label"
