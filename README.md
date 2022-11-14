@@ -4,9 +4,9 @@ Data structures and APIs in the docs folder
 
 Frameworks being used -
 
-Front end - React <br/>
-Server - FastAPI <br/>
-DB - MongoDB <br/>
+Front end - React - npm start <br/>
+Server - FastAPI  - uvicorn main:app --reload <br/>
+DB - MongoDB - docker compose up -d <br/>
 
 Datasets
 1. Google reviews and relevant words for 6 places (used - https://webscraper.io/)
