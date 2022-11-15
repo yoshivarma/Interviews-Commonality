@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from utils.gdrive_gateway import *
 from utils.transcription import *
 from io import BytesIO
+from  model.model import find_keywords_model
 
 # Database imports
 import mongo
@@ -101,25 +102,33 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
         # Testing out if retrieval from transcript_link is working
         recordings = await mongo.getAllRecordingsForCase(case_id)
+        transcript_content = ""
         if (len(recordings) > 0):
-            recording = recordings[0]
-            if (recording.transcript_link != None):
-                transcript_content = read_text_file(recording.transcript_link)
-                print(transcript_content)
+            for recording in recordings:
+                if (recording.transcript_link != None):
+                    transcript_content += read_text_file(recording.transcript_link)
+        
 
         # 8. Retrieve all common phrases for a given case - call to Yoshita's code
         # TODO - Add code for call (accepts list of google drive URLs and returns list of common words)
+        keywords = find_keywords_model(transcript_content)      
 
         # 9. Save the retrieved common phrases in the database
+        case.keywords = keywords
 
         # 10. Set keywords_loaded to True
         case.keywords_loaded = True
         case = await mongo.createOrUpdateCase(case)
-        # return {"filename" : transcript}
-        return {"filename" : recording_file.filename}
+
+        return {"Keywords" : case.keywords}
 
     ## End of async block
 
 @app.delete("/api/cases/{case_id}/recordings/{recording_id}")
 async def delete_recording(recording_id: ObjectId):
     await mongo.deleteRecording(recording_id)
+
+@app.get("/api/cases/{case_id}/keywords")
+async def find_keywords(case_id: ObjectId):
+    case = await mongo.getCase(case_id)
+    return case.keywords

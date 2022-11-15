@@ -111,9 +111,10 @@ class N_gram_model:
 
     return most_occur
 
-def find_keywords_model():
+def find_keywords_model(transcript):
     wiki_lst = []
-    wiki_lst = tokenize.sent_tokenize(wikipedia.page('Data Science','Artificial intelligence','Machine ;earning','European Central Bank','Bank').content)
+    # wiki_lst = tokenize.sent_tokenize(wikipedia.page('Data Science','Artificial intelligence','Machine ;earning','European Central Bank','Bank').content)
+    wiki_lst = tokenize.sent_tokenize(transcript)
     N_gram = N_gram_model(wiki_lst, 7)
     most_occur = N_gram.execute(wiki_lst, 7)
     return most_occur

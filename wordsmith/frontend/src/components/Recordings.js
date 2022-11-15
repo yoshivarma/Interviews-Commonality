@@ -101,7 +101,7 @@ const Recordings = () => {
 					file.name.split(".")[0].slice(1);
 
 				const formData = new FormData();
-				formData.append("recording_file", file, file.name);
+				formData.append("recording_file", file, recording_name);
 
 				const config = {
 					headers: {
@@ -130,51 +130,54 @@ const Recordings = () => {
 		getCaseDetails();
 	}; 
 
-	const addFile = (e) => {
-		Array.from(e.target.files).forEach(async (file) => {
-			if (file) {
-				selected_audios.push(URL.createObjectURL(file));
-				selected_audio_names.push(
-					file.name.split(".")[0].charAt(0).toUpperCase() +
-						file.name.split(".")[0].slice(1)
-				);
-				const duration = await getBlobDuration(URL.createObjectURL(file));
-				const str_duration = convertToMinsAndSecs(Math.floor(duration));
-				selected_audio_durations.push(str_duration);
-				setAudio(URL.createObjectURL(file));
-			}
-		});
+	// const addFile = (e) => {
+	// 	Array.from(e.target.files).forEach(async (file) => {
+	// 		if (file) {
+	// 			selected_audios.push(URL.createObjectURL(file));
+	// 			selected_audio_names.push(
+	// 				file.name.split(".")[0].charAt(0).toUpperCase() +
+	// 					file.name.split(".")[0].slice(1)
+	// 			);
+	// 			const duration = await getBlobDuration(URL.createObjectURL(file));
+	// 			const str_duration = convertToMinsAndSecs(Math.floor(duration));
+	// 			selected_audio_durations.push(str_duration);
+	// 			setAudio(URL.createObjectURL(file));
+	// 		}
+	// 	});
 
-		setAudios([...audios, selected_audios]);
-		setAudioName([...audioName, selected_audio_names]);
-		setAudioDuration([...audioDuration, selected_audio_durations]);
-	};
+	// 	setAudios([...audios, selected_audios]);
+	// 	setAudioName([...audioName, selected_audio_names]);
+	// 	setAudioDuration([...audioDuration, selected_audio_durations]);
+	// };
 
-	const findKeywords = async () => {
-		const formData = new FormData();
+	const findKeywords = async () =>
+	{
+		getCaseDetails();
+		
+		// const formData = new FormData();
 
-		audios.forEach((ad) => {
-			formData.append("audios", ad);
-		});
+		// audios.forEach((ad) => {
+		// 	formData.append("audios", ad);
+		// });
 
-		const config = {
-			headers: {
-				"content-type": "multipart/form-data",
-				"Access-Control-Allow-Origin": "*",
-			},
-		};
-		try {
-			let result = await axios.post(
-				"http://localhost:8000/findkeywords",
-				formData,
-				config
-			);
+		// const config = {
+		// 	headers: {
+		// 		"content-type": "multipart/form-data",
+		// 		"Access-Control-Allow-Origin": "*",
+		// 	},
+		// };
+		// try {
+		// 	let result = await axios.post(
+		// 		"http://localhost:8000/findkeywords",
+		// 		formData,
+		// 		config
+		// 	);
 
-			setKeywords([...keywords, ...result.data]);
-			console.log(result.data);
-		} catch (error) {
-			console.error(error); // NOTE - use "error.response.data` (not "error")
-		}
+		// 	setKeywords([...keywords, ...result.data]);
+		// 	console.log(result.data);
+		// } catch (error) {
+		// 	console.error(error); // NOTE - use "error.response.data` (not "error")
+		// }
 
 		// const requestOptions = {
 		// 	method: "POST",
