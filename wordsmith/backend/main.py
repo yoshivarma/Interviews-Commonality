@@ -2,7 +2,7 @@ from fastapi import Body, FastAPI, UploadFile, File
 from typing import List, Union, Optional
 from odmantic import ObjectId
 from starlette.middleware.cors import CORSMiddleware
-from utils.gdrive_upload import *
+from utils.gdrive_gateway import *
 from utils.transcription import *
 from io import BytesIO
 
@@ -98,6 +98,14 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
         # 7. Save transcript link for the recording in the database
         recording = await mongo.createOrUpdateRecording(recording)
+
+        # Testing out if retrieval from transcript_link is working
+        recordings = await mongo.getAllRecordingsForCase(case_id)
+        if (len(recordings) > 0):
+            recording = recordings[0]
+            if (recording.transcript_link != None):
+                transcript_content = read_text_file(recording.transcript_link)
+                print(transcript_content)
 
         # 8. Retrieve all common phrases for a given case - call to Yoshita's code
         # TODO - Add code for call (accepts list of google drive URLs and returns list of common words)

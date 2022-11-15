@@ -100,3 +100,25 @@ def upload_text_file(file_content):
 
 	except BaseException:
 		logging.exception("An exception was thrown!")
+
+
+# Takes as input a URL similar to
+# 'https://drive.google.com/uc?id=1zBmBTQTJumz7xu6non6iH2qLw3Veh1wb'
+# and outputs its id as string
+def obtain_file_id(file_url):
+	id_query_param = file_url.split('?')[1] # Returns id=1zBmBTQTJumz7xu6non6iH2qLw3Veh1wb
+	file_id = id_query_param.split('=')[1]
+	return file_id
+
+
+# Reads from a text file at the given link
+# and returns a string that contains all the contents
+# of the file
+def read_text_file(text_file_link):
+	try:
+		file_id = obtain_file_id(text_file_link)
+		gdrive_file = drive.CreateFile({'id': file_id})
+		file_content = gdrive_file.GetContentString()
+		return file_content
+	except BaseException:
+		logging.exception("An exception was thrown!")
