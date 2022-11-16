@@ -59,7 +59,7 @@ const Recordings = () => {
 			headers: {
 				"Access-Control-Allow-Origin": "*",
 				"content-type": "multipart/form-data",
-				"cache-control": "no-store"
+				"cache-control": "no-store",
 			},
 		};
 
@@ -123,12 +123,13 @@ const Recordings = () => {
 		});
 	};
 
-
 	const deleteRecording = async (r_id) => {
-		await axios.delete("http://localhost:8000/api/cases/" + id + "/recordings/"+ r_id );
+		await axios.delete(
+			"http://localhost:8000/api/cases/" + id + "/recordings/" + r_id
+		);
 
 		getCaseDetails();
-	}; 
+	};
 
 	// const addFile = (e) => {
 	// 	Array.from(e.target.files).forEach(async (file) => {
@@ -150,10 +151,10 @@ const Recordings = () => {
 	// 	setAudioDuration([...audioDuration, selected_audio_durations]);
 	// };
 
-	const findKeywords = async () =>
-	{
+	const findKeywords = async () => {
 		getCaseDetails();
-		
+		setOpen(false);
+
 		// const formData = new FormData();
 
 		// audios.forEach((ad) => {
@@ -277,7 +278,7 @@ const Recordings = () => {
 						<input
 							type="file"
 							onChange={(e) => {
-								addRecording(e).then(() => getCaseDetails())
+								addRecording(e).then(() => getCaseDetails());
 							}}
 							accept=".mp3, .wav"
 							hidden
@@ -431,7 +432,9 @@ const Recordings = () => {
 													fixed
 													sx={{ display: "flex", flexDirection: "column" }}
 												>
-													<Container sx={{display: "flex", flexDireciton: "row"}}>
+													<Container
+														sx={{ display: "flex", flexDireciton: "row" }}
+													>
 														<ListItemText
 															disableTypography
 															primary={a.name}
@@ -502,7 +505,7 @@ const Recordings = () => {
 						sx={{ background: "#DF8633" }}
 						variant="contained"
 						onClick={() => {
-							if (audios.length === 0) {
+							if (recordings.length === 0) {
 								setOpen(true);
 							} else {
 								findKeywords();

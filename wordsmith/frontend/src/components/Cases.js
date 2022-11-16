@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import {
-    Alert,
+	Alert,
 	Box,
 	Collapse,
 	Container,
@@ -23,11 +23,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 // const Cases = ( { agentCases } ) =>
 const Cases = () => {
-	
 	const [agentCases, setAgentCases] = useState([]);
 	const [textInput, setTextInput] = useState("");
 	const [open, setOpen] = useState(false);
-	
+
 	const getAgentCases = async () => {
 		const config = {
 			headers: {
@@ -45,26 +44,22 @@ const Cases = () => {
 	};
 
 	useEffect(() => {
-        getAgentCases();
-	}, [] );
-	
+		getAgentCases();
+	}, []);
 
-	const deleteCase = async ( id ) =>
-	{
-		await axios
-			.delete( "http://localhost:8000/api/cases/" + id );
-		
-		getAgentCases()
-	} 
+	const deleteCase = async (id) => {
+		await axios.delete("http://localhost:8000/api/cases/" + id);
+
+		getAgentCases();
+	};
 
 	const handleTextInputChange = (event) => {
 		setTextInput(event.target.value);
 	};
 
 	const addAgentCase = async () => {
+		const agentCase = { name: textInput };
 
-		const agentCase = {name: textInput}
-		
 		const config = {
 			headers: {
 				"Access-Control-Allow-Origin": "*",
@@ -72,7 +67,11 @@ const Cases = () => {
 		};
 
 		try {
-			let result = await axios.post("http://localhost:8000/api/cases", agentCase, config);
+			let result = await axios.post(
+				"http://localhost:8000/api/cases",
+				agentCase,
+				config
+			);
 			// setAgentCases(result.data);
 			// console.log(result.data);
 		} catch (error) {
@@ -134,9 +133,8 @@ const Cases = () => {
 					onClick={() => {
 						if (textInput.length === 0) {
 							setOpen(true);
-						} else
-						{
-							addAgentCase().then(() => getAgentCases())
+						} else {
+							addAgentCase().then(() => getAgentCases());
 						}
 					}}
 				>
@@ -196,17 +194,23 @@ const Cases = () => {
 														fontWeight: "bold",
 													}}
 												/>
-												<Typography
-													variant="h6"
-													sx={{
-														color: "#DF8633",
-														fontSize: "12px",
-														marginTop: -1,
-														marginLeft: 1,
-													}}
-												>
-													{a.keywords}
-												</Typography>
+												{/* <Container sx={{ display: "flex", flexWrap: "wrap" }}>
+													{a.keywords.slice(0,3).map((keyword) => {
+														return (
+															<Typography
+																variant="h6"
+																sx={{
+																	color: "#DF8633",
+																	fontSize: "12px",
+																	marginTop: -1,
+																	marginLeft: 1,
+																}}
+															>
+																{keyword}
+															</Typography>
+														);
+													})}
+												</Container> */}
 											</Container>
 											<Fab
 												variant="contained"
@@ -218,10 +222,7 @@ const Cases = () => {
 												}}
 												onClick={() => deleteCase(a.id)}
 											>
-												<DeleteIcon
-													fontSize="large"
-													sx={{ color: "white" }}
-												/>
+												<DeleteIcon fontSize="large" sx={{ color: "white" }} />
 											</Fab>
 											<Link to={"/case/" + a.id}>
 												<Fab
