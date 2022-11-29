@@ -8,12 +8,10 @@ import spacy
 #python -m spacy download en_core_web_sm
 #!pip install -U pip setuptools wheel
 #!pip install -U spacy[cuda110]
-#!pip install wikipedia
 #!pip install spacy_universal_sentence_encoder
 
 ## importing wikipedia test data
 import pandas as pd
-import wikipedia
 from nltk import tokenize
 import nltk
 nltk.download('punkt')
@@ -25,6 +23,7 @@ nlp = spacy.load('en_core_web_lg')
 
 ## importing KMeans to cluster data
 from nltk.cluster import KMeansClusterer
+from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 
 ## importing tokenizer and noun-adjective extractor
@@ -41,26 +40,20 @@ nltk.download('stopwords')
 noun_adj = spacy.load('en_core_web_sm')
 
 class N_gram_model:
-  def __init__(self, dataset, NUM_CLUSTERS):
+  def __init__(self, dataset):
     self.dataset = dataset
-    self.NUM_CLUSTERS = NUM_CLUSTERS
 
-  def clustering_question(self, data, NUM_CLUSTERS):
+  def clustering_question(self, data):
 
     sentences = data['text']
 
     X = np.array(data['emb'].tolist())
 
-    kclusterer = KMeansClusterer(
-        NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance,
-        repeats=25,avoid_empty_clusters=True)
+    assigned_clusters = AgglomerativeClustering().fit(X)
 
-    assigned_clusters = kclusterer.cluster(X, assign_clusters=True)
+    data['cluster'] = pd.Series(assigned_clusters.labels_, index=data.index)
 
-    data['cluster'] = pd.Series(assigned_clusters, index=data.index)
-    data['centroid'] = data['cluster'].apply(lambda x: kclusterer.means()[x])
-
-    return data, assigned_clusters
+    return data, assigned_clusters.labels_
 
   def get_embeddings(self, text):
     return nlp(text).vector
@@ -78,7 +71,7 @@ class N_gram_model:
     for each_cluster in cluster_data:
 
       #Verifying the length of each cluster
-      if len(each_cluster)> 5:
+      if len(each_cluster)> 3:
         #Removing stopwords
         filtered_sentence1 = remove_stopwords(str(each_cluster))        
         paragraph_without_brackets = re.sub(r"[^\w]'",'',str(filtered_sentence1))
@@ -102,25 +95,28 @@ class N_gram_model:
             most_occur.append(tup[0].lower())
     return most_occur
 
-  def execute(self, dataset, NUM_CLUSTERS):
-    data = pd.DataFrame (dataset, columns = ['text'])
+  def execute(self, dataset):
+    data = pd.DataFrame(dataset, columns = ['text'])
     # Generating sentence embedding from the text
     data['emb'] = data['text'].apply(self.get_embeddings)
 
     #clustering data
-    data, assigned_clusters = self.clustering_question(data, NUM_CLUSTERS)
+    data, assigned_clusters = self.clustering_question(data)
 
     #obtaining clustered data together for tokenizing
-    cluster_data = self.clustered_data(data, NUM_CLUSTERS)
+    cluster_data = self.clustered_data(data, len(np.unique(assigned_clusters)))
     most_occur = self.most_common_nouns_and_adjectives(cluster_data)
 
     return most_occur
 
 def find_keywords_model(transcript):
-    wiki_lst = []
     final_most_occur = []
-    N_gram = N_gram_model(wiki_lst, 4)
-    most_occur = N_gram.execute(wiki_lst, 4)
+    _lst = list(transcript.split("."))
+    #removing empty strings  
+    while("" in _lst):
+      _lst.remove("")
+    N_gram = N_gram_model(_lst)
+    most_occur = N_gram.execute(_lst)
 
     #verifying most occured words
     for string in most_occur:
