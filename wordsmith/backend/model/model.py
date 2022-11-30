@@ -80,18 +80,19 @@ class N_gram_model:
         noun_adj_pairs = []
         #Filtering out only noun and adjective phrases
         for chunk in tagged.noun_chunks:
-          noun = []
+          noun = ""
           for tok in chunk:
             if tok.pos_ == "NOUN" or tok.pos_ == "ADJ":
-              noun.append(tok.text)
-          noun_adj_pairs.append(str(noun).lower()) 
+              noun = f'{noun} {tok.text}'
+          if len(noun) >2:
+            noun_adj_pairs.append(noun) 
 
         #Obtaining counts of noun adjective phrases
         counter = Counter(noun_adj_pairs)
         counter_10 = counter.most_common(100)
         for tup in counter_10:
           #Verifying if the count is greater than 2
-          if (int(tup[1]) > 2) and (tup[0].lower() not in most_occur) and (tup[0] != 'it') and (tup[0] != 'he'):
+          if (int(tup[1]) >= 2) and (tup[0].lower() not in most_occur) and (tup[0] != 'it') and (tup[0] != 'he'):
             most_occur.append(tup[0].lower())
     return most_occur
 
