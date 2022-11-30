@@ -104,9 +104,9 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         recordings = await mongo.getAllRecordingsForCase(case_id)
         transcript_content = ""
         if (len(recordings) > 0):
-            for recording in recordings:
-                if (recording.transcript_link != None):
-                    transcript_content += read_text_file(recording.transcript_link)
+            for r in recordings:
+                if (r.transcript_link != None):
+                    transcript_content += read_text_file(r.transcript_link)
 
         # 8. Retrieve all common phrases for a given case - call to Yoshita's code
         # TODO - Add code for call (accepts list of google drive URLs and returns list of common words)

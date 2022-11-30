@@ -3,6 +3,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AddIcon from "@mui/icons-material/Add";
+import SyncIcon from "@mui/icons-material/Sync";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -45,6 +46,7 @@ const Recordings = () => {
 	const [keywords, setKeywords] = useState([]);
 	const [caseName, setCaseName] = useState("");
 	const [recordings, setRecordings] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	const [open, setOpen] = useState(false);
 
@@ -94,6 +96,7 @@ const Recordings = () => {
 	};
 
 	const addRecording = async (e) => {
+		setLoading(true);
 		Array.from(e.target.files).forEach(async (file) => {
 			if (file) {
 				const recording_name =
@@ -115,6 +118,7 @@ const Recordings = () => {
 						formData,
 						config
 					);
+					setLoading(false);
 					console.log(result.data);
 				} catch (error) {
 					console.error(error); // NOTE - use "error.response.data` (not "error")
@@ -221,102 +225,110 @@ const Recordings = () => {
 					Add Recordings First!
 				</Alert>
 			</Collapse>
-			<form>
-				<Box
-					component="span"
-					sx={{
-						"& > :not(style)": { m: 1 },
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-					}}
-					noValidate
-					autoComplete="off"
-				>
-					<Link to={"/"}>
+			{loading ? (
+				<Container sx={{ display: "flex" , alignContent: "center", justifyContent: "center"}}>
+					<Typography variant="h4" sx={{ color: "white" }}>
+						Loading
+					</Typography>{" "}
+					<SyncIcon fontSize="large" sx={{ color: "white" }} />
+				</Container>
+			) : (
+				<form>
+					<Box
+						component="span"
+						sx={{
+							"& > :not(style)": { m: 1 },
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+						noValidate
+						autoComplete="off"
+					>
+						<Link to={"/"}>
+							<Fab
+								variant="contained"
+								component="label"
+								sx={{ background: "none", height: "40px", width: "40px" }}
+								onClick={() => console.log("Go back to cases!")}
+							>
+								<ChevronLeftIcon fontSize="large" sx={{ color: "white" }} />
+							</Fab>
+						</Link>
+						<TextField
+							hiddenLabel
+							id="filled-hidden-label-small"
+							size="small"
+							placeholder="Recording Title"
+							variant="filled"
+							sx={{
+								input: { color: "white" },
+								label: { color: "orange" },
+								background: "#80768D",
+								borderRadius: 1,
+							}}
+						/>
+
 						<Fab
 							variant="contained"
 							component="label"
-							sx={{ background: "none", height: "40px", width: "40px" }}
-							onClick={() => console.log("Go back to cases!")}
+							sx={{ background: "#DF8633", height: "40px", width: "40px" }}
 						>
-							<ChevronLeftIcon fontSize="large" sx={{ color: "white" }} />
+							<MicIcon fontSize="large" sx={{ color: "white" }} />
 						</Fab>
-					</Link>
-					<TextField
-						hiddenLabel
-						id="filled-hidden-label-small"
-						size="small"
-						placeholder="Recording Title"
-						variant="filled"
-						sx={{
-							input: { color: "white" },
-							label: { color: "orange" },
-							background: "#80768D",
-							borderRadius: 1,
-						}}
-					/>
-
-					<Fab
-						variant="contained"
-						component="label"
-						sx={{ background: "#DF8633", height: "40px", width: "40px" }}
-					>
-						<MicIcon fontSize="large" sx={{ color: "white" }} />
-					</Fab>
-					<Fab
-						variant="contained"
-						component="label"
-						sx={{
-							background: "#DF8633",
-							marginLeft: 1,
-							height: "40px",
-							width: "40px",
-						}}
-					>
-						<AddIcon fontSize="large" sx={{ color: "white" }} />
-						<input
-							type="file"
-							onChange={(e) => {
-								addRecording(e).then(() => getCaseDetails());
-							}}
-							accept=".mp3, .wav"
-							hidden
-						/>
-					</Fab>
-				</Box>
-				<Typography variant="h4" sx={{ color: "white" }}>
-					Case {caseName} Keywords
-				</Typography>
-				{keywords.length !== 0 ? (
-					keywords.length < 4 ? (
-						<Box
+						<Fab
+							variant="contained"
+							component="label"
 							sx={{
-								display: "flex",
-								flexWrap: "wrap",
-								justifyContent: "space-around",
-								p: 5,
-								m: 1,
-								maxWidth: 600,
-								borderRadius: 1,
+								background: "#DF8633",
+								marginLeft: 1,
+								height: "40px",
+								width: "40px",
 							}}
 						>
-							{keywords.map((data, index) => {
-								return (
-									// <ListItem key={index}>
-									<Chip
-										key={index}
-										onClick={() => handleClick(data)}
-										label={data}
-										sx={{ background: "#DF8633", color: "white", m: 0.5 }}
-									/>
-									// </ListItem>
-								);
-							})}
-						</Box>
-					) : (
-						<>
-							{/* <Box
+							<AddIcon fontSize="large" sx={{ color: "white" }} />
+							<input
+								type="file"
+								onChange={(e) => {
+									addRecording(e).then(() => getCaseDetails());
+								}}
+								accept=".mp3, .wav"
+								hidden
+							/>
+						</Fab>
+					</Box>
+					<Typography variant="h4" sx={{ color: "white" }}>
+						Case {caseName} Keywords
+					</Typography>
+					{keywords.length !== 0 ? (
+						keywords.length < 4 ? (
+							<Box
+								sx={{
+									display: "flex",
+									flexWrap: "wrap",
+									justifyContent: "space-around",
+									p: 5,
+									m: 1,
+									maxWidth: 600,
+									borderRadius: 1,
+								}}
+							>
+								{keywords.map((data, index) => {
+									return (
+										// <ListItem key={index}>
+										<Chip
+											key={index}
+											onClick={() => handleClick(data)}
+											label={data}
+											sx={{ background: "#DF8633", color: "white", m: 0.5 }}
+										/>
+										// </ListItem>
+									);
+								})}
+							</Box>
+						) : (
+							<>
+								{/* <Box
 									sx={{
 										display: "flex",
 										flexWrap: "wrap",
@@ -340,182 +352,183 @@ const Recordings = () => {
 										);
 									})}
 								</Box> */}
-							<Accordion
-								sx={{
-									backgroundColor: "#1A0B23",
-									border: "none",
-								}}
-							>
-								<AccordionSummary
-									expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
-									aria-controls="panel1a-content"
-									id="panel1a-header"
-								>
-									<Typography sx={{ color: "white" }}>
-										View All {keywords.length} Keywords
-									</Typography>
-								</AccordionSummary>
-								<AccordionDetails
+								<Accordion
 									sx={{
-										display: "flex",
-										flexWrap: "wrap",
-										justifyContent: "space-around",
-										// p: 5,
-										// m: 1,
-										maxWidth: 400,
-										borderRadius: 1,
+										backgroundColor: "#1A0B23",
+										border: "none",
 									}}
 								>
-									{keywords.map((data, index) => {
-										return (
-											<Chip
-												key={index}
-												onClick={() => handleClick(data)}
-												label={data}
-												sx={{ background: "#DF8633", color: "white", m: 0.5 }}
-											/>
-										);
-									})}
-								</AccordionDetails>
-							</Accordion>
-						</>
-					)
-				) : (
-					<Typography variant="p" sx={{ color: "#DF8633" }}>
-						No keywords yet
-					</Typography>
-				)}
-				<Box>
-					<Typography variant="h4" sx={{ color: "white" }}>
-						Recordings
-					</Typography>
-					<List
-						sx={{
-							width: "100%",
-							maxWidth: 400,
-							bgcolor: "background.deepPurple[500]",
-							position: "relative",
-							overflow: "auto",
-							maxHeight: 450,
-							"& ul": { padding: 0 },
-						}}
-						subheader={<li />}
-					>
-						{recordings.map((a, index) => {
-							return (
-								<li key={index}>
-									<ul>
-										<ListItem
-											onClick={() => setAudio(a.recording_link.toString())}
-										>
-											<ListItemButton>
-												<Box
-													component="span"
-													sx={{
-														width: 70,
-														height: 60,
-														backgroundColor: "#636363",
-														borderRadius: 4,
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-													}}
-												>
-													<Typography
-														variant="h5"
-														sx={{ color: "white", fontWeight: "bold" }}
-													>
-														{index + 1}
-													</Typography>
-												</Box>
-												<Container
-													fixed
-													sx={{ display: "flex", flexDirection: "column" }}
-												>
-													<Container
-														sx={{ display: "flex", flexDireciton: "row" }}
-													>
-														<ListItemText
-															disableTypography
-															primary={a.name}
-															sx={{
-																color: "white",
-																fontSize: "20px",
-																marginLeft: 1,
-																fontWeight: "bold",
-															}}
-														/>
-														<Fab
-															variant="contained"
-															component="label"
-															sx={{
-																background: "none",
-																height: "40px",
-																width: "40px",
-															}}
-															onClick={() => deleteRecording(a.id)}
-														>
-															<DeleteIcon
-																fontSize="large"
-																sx={{ color: "white" }}
-															/>
-														</Fab>
-													</Container>
-													<Typography
-														variant="h6"
+									<AccordionSummary
+										expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+										aria-controls="panel1a-content"
+										id="panel1a-header"
+									>
+										<Typography sx={{ color: "white" }}>
+											View All {keywords.length} Keywords
+										</Typography>
+									</AccordionSummary>
+									<AccordionDetails
+										sx={{
+											display: "flex",
+											flexWrap: "wrap",
+											justifyContent: "space-around",
+											// p: 5,
+											// m: 1,
+											maxWidth: 400,
+											borderRadius: 1,
+										}}
+									>
+										{keywords.map((data, index) => {
+											return (
+												<Chip
+													key={index}
+													onClick={() => handleClick(data)}
+													label={data}
+													sx={{ background: "#DF8633", color: "white", m: 0.5 }}
+												/>
+											);
+										})}
+									</AccordionDetails>
+								</Accordion>
+							</>
+						)
+					) : (
+						<Typography variant="p" sx={{ color: "#DF8633" }}>
+							No keywords yet
+						</Typography>
+					)}
+					<Box>
+						<Typography variant="h4" sx={{ color: "white" }}>
+							Recordings
+						</Typography>
+						<List
+							sx={{
+								width: "100%",
+								maxWidth: 400,
+								bgcolor: "background.deepPurple[500]",
+								position: "relative",
+								overflow: "auto",
+								maxHeight: 450,
+								"& ul": { padding: 0 },
+							}}
+							subheader={<li />}
+						>
+							{recordings.map((a, index) => {
+								return (
+									<li key={index}>
+										<ul>
+											<ListItem
+												onClick={() => setAudio(a.recording_link.toString())}
+											>
+												<ListItemButton>
+													<Box
+														component="span"
 														sx={{
-															color: "#DF8633",
-															fontSize: "12px",
-															marginTop: -1,
-															marginLeft: 1,
+															width: 70,
+															height: 60,
+															backgroundColor: "#636363",
+															borderRadius: 4,
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
 														}}
 													>
-														{audioDuration[index]}
-													</Typography>
-												</Container>
-											</ListItemButton>
-										</ListItem>
-										<Divider sx={{ background: "#9F9F9F" }} />
-									</ul>
-								</li>
-							);
-						})}
-					</List>
-				</Box>
+														<Typography
+															variant="h5"
+															sx={{ color: "white", fontWeight: "bold" }}
+														>
+															{index + 1}
+														</Typography>
+													</Box>
+													<Container
+														fixed
+														sx={{ display: "flex", flexDirection: "column" }}
+													>
+														<Container
+															sx={{ display: "flex", flexDireciton: "row" }}
+														>
+															<ListItemText
+																disableTypography
+																primary={a.name}
+																sx={{
+																	color: "white",
+																	fontSize: "20px",
+																	marginLeft: 1,
+																	fontWeight: "bold",
+																}}
+															/>
+															<Fab
+																variant="contained"
+																component="label"
+																sx={{
+																	background: "none",
+																	height: "40px",
+																	width: "40px",
+																}}
+																onClick={() => deleteRecording(a.id)}
+															>
+																<DeleteIcon
+																	fontSize="large"
+																	sx={{ color: "white" }}
+																/>
+															</Fab>
+														</Container>
+														<Typography
+															variant="h6"
+															sx={{
+																color: "#DF8633",
+																fontSize: "12px",
+																marginTop: -1,
+																marginLeft: 1,
+															}}
+														>
+															{audioDuration[index]}
+														</Typography>
+													</Container>
+												</ListItemButton>
+											</ListItem>
+											<Divider sx={{ background: "#9F9F9F" }} />
+										</ul>
+									</li>
+								);
+							})}
+						</List>
+					</Box>
 
-				<Box
-					component="span"
-					sx={{
-						"& > :not(style)": { m: 1 },
-					}}
-					noValidate
-					autoComplete="off"
-				>
-					<ReactAudioPlayer src={audio} autoPlay controls />
-				</Box>
-				<Box
-					component="span"
-					sx={{
-						"& > :not(style)": { m: 1 },
-					}}
-					noValidate
-					autoComplete="off"
-				>
-					<Button
-						sx={{ background: "#DF8633" }}
-						variant="contained"
-						onClick={() => {
-							if (recordings.length === 0) {
-								setOpen(true);
-							} else {
-								findKeywords();
-							}
+					<Box
+						component="span"
+						sx={{
+							"& > :not(style)": { m: 1 },
 						}}
+						noValidate
+						autoComplete="off"
 					>
-						Find Keywords
-					</Button>
-				</Box>
-			</form>
+						<ReactAudioPlayer src={audio} autoPlay controls />
+					</Box>
+					<Box
+						component="span"
+						sx={{
+							"& > :not(style)": { m: 1 },
+						}}
+						noValidate
+						autoComplete="off"
+					>
+						<Button
+							sx={{ background: "#DF8633" }}
+							variant="contained"
+							onClick={() => {
+								if (recordings.length === 0) {
+									setOpen(true);
+								} else {
+									findKeywords();
+								}
+							}}
+						>
+							Find Keywords
+						</Button>
+					</Box>
+				</form>
+			)}
 		</Container>
 		// </ThemeProvider>
 	);
