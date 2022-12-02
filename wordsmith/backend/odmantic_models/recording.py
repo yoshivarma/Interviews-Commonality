@@ -1,8 +1,6 @@
 from odmantic import Field, Model, ObjectId, Index
-import pymongo
 from pydantic import AnyUrl
 from typing import Optional
-
 
 class Recording(Model):
 	name: str
@@ -12,4 +10,4 @@ class Recording(Model):
 
 	class Config:
 		def indexes():
-			yield Index(Recording.case_id, Recording.name, unique=True, name="case_recording_unique") 
+			yield Index(Recording.case_id, Recording.name, unique=True, name="case_recording_unique")

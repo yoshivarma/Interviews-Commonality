@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from utils.gdrive_gateway import *
 from utils.transcription import *
 from io import BytesIO
-from  model.model import find_keywords_model
+from model.model import find_keywords_model
 
 # Database imports
 import mongo
@@ -31,6 +31,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.on_event("startup")
 async def startup():
@@ -65,6 +66,7 @@ async def get_recordings_for_case(case_id: ObjectId):
     recordings = await mongo.getAllRecordingsForCase(case_id)
     return recordings
 
+
 @app.post("/api/cases/{case_id}/recordings")
 async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[UploadFile] = None):
 
@@ -77,21 +79,22 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # 1. Get case to which recording is to be added
         case = await mongo.getCase(case_id)
 
-        #2. Create new recording pydantic object with empty recording link and transcript link and save it in the database
+        # 2. Create new recording pydantic object with empty recording link and transcript link and save it in the database
         recording = mongo.Recording(name=recording_name, case_id=case_id)
         recording = await mongo.createOrUpdateRecording(recording)
 
-        ## Beginning of async block
+        # Beginning of async block
 
-        #3. For that case, set keywords_loaded to false (since we need to recompute keywords) in the database
+        # 3. For that case, set keywords_loaded to false (since we need to recompute keywords) in the database
         case.keywords_loaded = False
         case = await mongo.createOrUpdateCase(case)
 
-        #4. Upload file to google drive and get the link
-        recording.recording_link = upload_audio_file(recording_file.filename, recording_file.file, recording_file.content_type)
+        # 4. Upload file to google drive and get the link
+        recording.recording_link = upload_audio_file(
+            recording_file.filename, recording_file.file, recording_file.content_type)
         recording = await mongo.createOrUpdateRecording(recording)
 
-        #5. Get transcription of the uploaded file
+        # 5. Get transcription of the uploaded file
         transcription = transcribe(recording.recording_link)
 
         # 6. Upload transcription to google drive and retrieve link
@@ -110,7 +113,7 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
         # 8. Retrieve all common phrases for a given case - call to Yoshita's code
         # TODO - Add code for call (accepts list of google drive URLs and returns list of common words)
-        keywords = find_keywords_model(transcript_content)      
+        keywords = find_keywords_model(transcript_content)
 
         # 9. Save the retrieved common phrases in the database
         case.keywords = keywords
@@ -119,13 +122,15 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         case.keywords_loaded = True
         case = await mongo.createOrUpdateCase(case)
 
-        return {"Keywords" : case.keywords}
+        return {"Keywords": case.keywords}
 
-    ## End of async block
+    # End of async block
+
 
 @app.delete("/api/cases/{case_id}/recordings/{recording_id}")
 async def delete_recording(recording_id: ObjectId):
     await mongo.deleteRecording(recording_id)
+
 
 @app.get("/api/cases/{case_id}/keywords")
 async def find_keywords(case_id: ObjectId):

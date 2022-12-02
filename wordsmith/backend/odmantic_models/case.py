@@ -10,6 +10,6 @@ class Case(Model):
 	keywords: List[str] = []
 
 	class Config:
-	    @staticmethod
-	    def indexes():
-	        yield pymongo.IndexModel([(+Case.name, pymongo.TEXT)])
+		@staticmethod
+		def indexes():
+			yield pymongo.IndexModel([(+Case.name, pymongo.TEXT)])
