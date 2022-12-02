@@ -82,12 +82,13 @@ def upload_audio_file(file_name, file_content, file_type):
 # access for everyone with a link. This is more
 # permissible than it needs to be and can be updated
 # by granting the frontend permissions
-def upload_text_file(file_content):
+def upload_text_file(file_name, file_content):
 	try:
 
 		gdrive_file = drive.CreateFile(
 			{
 				'parents': [{'id': FOLDER_ID}],
+				'title': file_name
 			}
 		)
 		gdrive_file.SetContentString(file_content)

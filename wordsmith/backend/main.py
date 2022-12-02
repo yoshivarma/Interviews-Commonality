@@ -73,7 +73,6 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
     if not recording_file:
         return {"message": "No upload file sent"}
     else:
-        # return {"filename": recording_file.filename}
         recording_name = recording_file.filename
 
         # 1. Get case to which recording is to be added
@@ -83,8 +82,6 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         recording = mongo.Recording(name=recording_name, case_id=case_id)
         recording = await mongo.createOrUpdateRecording(recording)
 
-        # Beginning of async block
-
         # 3. For that case, set keywords_loaded to false (since we need to recompute keywords) in the database
         case.keywords_loaded = False
         case = await mongo.createOrUpdateCase(case)
@@ -93,26 +90,28 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         recording.recording_link = upload_audio_file(
             recording_file.filename, recording_file.file, recording_file.content_type)
         recording = await mongo.createOrUpdateRecording(recording)
+        print(recording_file.filename)
 
         # 5. Get transcription of the uploaded file
         transcription = transcribe(recording.recording_link)
 
         # 6. Upload transcription to google drive and retrieve link
-        recording.transcript_link = upload_text_file(transcription)
+        transcription_file_name = recording_name + '_transcript'
+        recording.transcript_link = upload_text_file(transcription_file_name, transcription)
 
         # 7. Save transcript link for the recording in the database
-        recording = await mongo.createOrUpdateRecording(recording)
+        recording = await mongo.createOrUpdateRecording(recording)       
 
-        # Testing out if retrieval from transcript_link is working
+        # 8. Retrieve all common phrases for a given case - call to Yoshita's code
+
+        # Preprocessing data since the code to obtain common noun phrases
+        # accepts a list of sentences
         recordings = await mongo.getAllRecordingsForCase(case_id)
         transcript_content = ""
         if (len(recordings) > 0):
             for r in recordings:
                 if (r.transcript_link != None):
                     transcript_content += read_text_file(r.transcript_link)
-
-        # 8. Retrieve all common phrases for a given case - call to Yoshita's code
-        # TODO - Add code for call (accepts list of google drive URLs and returns list of common words)
         keywords = find_keywords_model(transcript_content)
 
         # 9. Save the retrieved common phrases in the database
@@ -124,8 +123,6 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
         return {"Keywords": case.keywords}
 
-    # End of async block
-
 
 @app.delete("/api/cases/{case_id}/recordings/{recording_id}")
 async def delete_recording(recording_id: ObjectId):
@@ -134,5 +131,6 @@ async def delete_recording(recording_id: ObjectId):
 
 @app.get("/api/cases/{case_id}/keywords")
 async def find_keywords(case_id: ObjectId):
+    # Add check for keywords_loaded
     case = await mongo.getCase(case_id)
     return case.keywords
