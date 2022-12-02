@@ -49,6 +49,11 @@ async def getAllRecordingsForCase(case_id: str):
 	return recordings
 
 
+async def getRecording(recording_id: str):
+	recording = await engine.find_one(Recording, Recording.id == recording_id)
+	return recording
+
+
 async def createOrUpdateRecording(recording: Recording):
 	try:
 		recording = await engine.save(recording)

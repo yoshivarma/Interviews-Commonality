@@ -51,6 +51,12 @@ async def create_or_update_case(case: Case):
 
 @app.delete("/api/cases/{case_id}")
 async def delete_case(case_id: ObjectId):
+    # Remove all recordings for the case from the db and GDrive
+    recordings = await mongo.getAllRecordingsForCase(case_id)
+    for recording in recordings:
+        await delete_recording_from_drive_db(recording)
+
+    # Delete case from DB
     await mongo.deleteCase(case_id)
 
 
@@ -126,11 +132,23 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
 
 @app.delete("/api/cases/{case_id}/recordings/{recording_id}")
 async def delete_recording(recording_id: ObjectId):
-    await mongo.deleteRecording(recording_id)
-
+    recording = await mongo.getRecording(recording_id)
+    await delete_recording_from_drive_db(recording)
 
 @app.get("/api/cases/{case_id}/keywords")
 async def find_keywords(case_id: ObjectId):
     # Add check for keywords_loaded
     case = await mongo.getCase(case_id)
     return case.keywords
+
+
+# Util to -
+# 1. Delete recording and its transcript from the drive
+# 2. Remove recording from the database
+async def delete_recording_from_drive_db(recording: Recording): 
+    # Delete recording and its transcript from the drive
+    delete_file(recording.recording_link)
+    delete_file(recording.transcript_link)
+    
+    # Remove recording from the database
+    await mongo.deleteRecording(recording.id)

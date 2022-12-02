@@ -121,3 +121,13 @@ def read_text_file(text_file_link):
 		return file_content
 	except BaseException:
 		logging.exception("An exception was thrown!")
+
+
+# Deletes file with given link from the drive
+def delete_file(file_link):
+	try:
+		file_id = obtain_file_id(file_link)
+		gdrive_file = drive.CreateFile({'id': file_id})
+		gdrive_file.Delete()
+	except BaseException:
+		logging.exception("An exception was thrown!")
