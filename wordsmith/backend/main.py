@@ -84,9 +84,8 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # 1. Get case to which recording is to be added
         case = await mongo.getCase(case_id)
 
-        # 2. Create new recording pydantic object with empty recording link and transcript link and save it in the database
+        # 2. Create new recording pydantic object with empty recording link and transcript link
         recording = mongo.Recording(name=recording_name, case_id=case_id)
-        recording = await mongo.createOrUpdateRecording(recording)
 
         # 3. For that case, set keywords_loaded to false (since we need to recompute keywords) in the database
         case.keywords_loaded = False
@@ -95,8 +94,6 @@ async def add_recording_to_case(case_id: ObjectId, recording_file: Optional[Uplo
         # 4. Upload file to google drive and get the link
         recording.recording_link = upload_audio_file(
             recording_file.filename, recording_file.file, recording_file.content_type)
-        recording = await mongo.createOrUpdateRecording(recording)
-        print(recording_file.filename)
 
         # 5. Get transcription of the uploaded file
         transcription = transcribe(recording.recording_link)
